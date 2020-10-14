@@ -4,6 +4,11 @@
 #include "engine_pch.h"
 #include "core/application.h"
 
+#ifdef NG_PLATFORM_WINDOWS
+#include "platform/windows/winTimer.h"
+#endif
+
+
 namespace Engine {
 	// Set static vars
 	Application* Application::s_instance = nullptr;
@@ -22,7 +27,11 @@ namespace Engine {
 
 
 		// Start timer
+#ifdef NG_PLATFORM_WINDOWS
+		m_timer.reset(new WinTimer);
+#else
 		m_timer.reset(new ChronoTimer);
+#endif
 		m_timer->start();
 	}
 
