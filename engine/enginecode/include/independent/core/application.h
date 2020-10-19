@@ -15,6 +15,7 @@ namespace Engine {
 
 	class Application
 	{
+
 	protected:
 		Application(); //!< Constructor
 		std::shared_ptr<Log> m_logSystem; //!< Log system

@@ -7,9 +7,8 @@ namespace Engine
 {	
 	
 	/**
-	\class Timer - interface class for timers/
+	\class Timer - interface class for timers
 	*/
-
 	class ITimer
 	{
 
@@ -17,20 +16,20 @@ namespace Engine
 		virtual void start() = 0; //!< Start the timer
 		virtual void reset() = 0; //!< Reset the timer
 		virtual float getElapsedTime() = 0; //!< Get the time elapsed since the last start or reset
+
 	};
 
 
 
 	/**
-	\class Timer - chrono timer class/
+	\class Timer - chrono timer class
 	*/
-
 	class ChronoTimer : public ITimer
 	{
+
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_startPoint;
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_endPoint;
-
 
 	public:
 		virtual inline void start() override { m_startPoint = std::chrono::high_resolution_clock::now(); }

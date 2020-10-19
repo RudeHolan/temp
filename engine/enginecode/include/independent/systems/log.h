@@ -7,14 +7,15 @@
 
 namespace Engine
 
-{
+{	/**
+	\class Log - A class for the logging system
+	*/
 	class Log : public System
 	{
+
 	private:
 		static std::shared_ptr<spdlog::logger> s_consoleLogger; //!< Console logger
 		static std::shared_ptr<spdlog::logger> s_fileLogger; //!< File logger
-
-
 
 	public:
 		virtual void start(SystemSignal init = SystemSignal::None, ...) override; //!< Start the logger
@@ -41,7 +42,6 @@ namespace Engine
 		template <class ...Args>
 		static void file(Args&& ... args);
 	};
-
 
 	template<class ...Args>
 	static void Log::debug(Args&& ...args)
