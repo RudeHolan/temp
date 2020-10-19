@@ -3,6 +3,7 @@
 
 #include "engine_pch.h"
 #include "core/application.h"
+#include "events/events.h"
 
 namespace Engine {
 	// Set static vars
@@ -39,15 +40,24 @@ namespace Engine {
 	void Application::run()
 	{
 
-
 		float timestep = 0.f;
+		float accumulatedTime = 0.f;
+
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
 				m_timer->reset();
-				Log::trace("FPS {0}", 1.0f / timestep);
+				//Log::trace("FPS {0}", 1.0f / timestep);
+
+				accumulatedTime += timestep;
+				if (accumulatedTime > 5.f)
+				{
+					WindowCloseEvent close();
+					WindowsResizeEvent resize(800, 600);
+					// Handle this 
+
+				}
 				
-				//Do frame stuff
 
 		};
 	}
