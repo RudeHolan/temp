@@ -53,7 +53,7 @@ namespace Engine {
 				if (accumulatedTime > 5.f)
 				{
 					WindowCloseEvent close();
-					WindowsResizeEvent resize(800, 600);
+					WindowResizeEvent resize(800, 600);
 					// Handle this 
 
 				}
