@@ -13,6 +13,7 @@ namespace Engine
 	*/
 	class WindowEvent : Event 
 	{
+	public:
 		virtual int32_t getCategoryFlags() const override { return EventCategoryWindow; } //!< Get the event category flag
 	};
 

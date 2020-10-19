@@ -25,7 +25,7 @@ namespace Engine
 	enum EventCategory
 	{
 		None = 0,
-		EventCategoryWindow = 1 << 0,     //00000001
+		EventCategoryWindow = 1 << 0,      //00000001
 		EventCategoryInput = 1 << 1,       //00000010
 		EventCategoryKeyboard = 1 << 2,    //00000100
 		EventCategoryMouse = 1 << 3,       //00001000
@@ -47,7 +47,7 @@ namespace Engine
 		virtual int32_t getCategoryFlags() const = 0; //!< Get the event category flags
 		inline bool handled() const { return m_handled; } //!< Has the event been handled
 		inline void handle(bool isHandled) { m_handled = isHandled; } //!< Handle the event
-		inline bool isInCategory(EventCategory category) const { return getCategoryFlags() & category; } //!< Is the event in category
+		inline bool isInCategory(EventCategory category) const { return getCategoryFlags() & category; } //!< Is the event in the category
 
 	};
 
