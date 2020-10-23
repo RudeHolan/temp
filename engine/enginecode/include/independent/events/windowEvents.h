@@ -11,7 +11,7 @@ namespace Engine
 	/**
 	\class WindowsEvent - The base windows event class
 	*/
-	class WindowEvent : Event 
+	class WindowEvent : public Event 
 	{
 	public:
 		virtual int32_t getCategoryFlags() const override { return EventCategoryWindow; } //!< Get the event category flag

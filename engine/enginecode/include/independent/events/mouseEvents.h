@@ -20,13 +20,13 @@ namespace Engine
 	/**
 	\class MouseButtonPressedEvent - The mouse button press event class
 	*/
-	class MouseButtonPressedEvent : public MouseEvent
+	class MouseButtonPressEvent : public MouseEvent
 	{
 	private:
 		int32_t m_button;
 
 	public:
-		MouseButtonPressedEvent(int32_t button) :
+		MouseButtonPressEvent(int32_t button) :
 			m_button(button)
 		{} //!< Default constructor
 
@@ -40,13 +40,13 @@ namespace Engine
 	/**
     \class MouseButtonReleasedEvent - The mouse button release event class
     */
-	class MouseButtonReleasedEvent : public MouseEvent
+	class MouseButtonReleaseEvent : public MouseEvent
 	{
 	private:
 		int32_t m_button;
 
 	public:
-		MouseButtonReleasedEvent(int32_t button) :
+		MouseButtonReleaseEvent(int32_t button) :
 			m_button(button)
 		{} //!< Default constructor
 
@@ -59,7 +59,7 @@ namespace Engine
 	/**
     \class MouseMovedEvent - The mouse move event class
     */
-	class MouseMovedEvent : public MouseEvent
+	class MouseMoveEvent : public MouseEvent
 	{
 		
 	private:
@@ -67,7 +67,7 @@ namespace Engine
 		float m_mouseY;
 
 	public:
-		MouseMovedEvent(float x, float y) :
+		MouseMoveEvent(float x, float y) :
 			m_mouseX(x),
 			m_mouseY(y)
 		{} //!< Default constructor
@@ -84,7 +84,7 @@ namespace Engine
 	/**
     \class MouseScrolledEvent - The mouse scroll event class
     */
-	class MouseScrolledEvent : public MouseEvent
+	class MouseScrollEvent : public MouseEvent
 	{
 
 	private:

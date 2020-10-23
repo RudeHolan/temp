@@ -29,7 +29,7 @@ namespace Engine
 	/**
 	\class KeyPressedEvent - The key press event
 	*/
-	class KeyPressedEvent : public KeyEvent
+	class KeyPressEvent : public KeyEvent
 	{
 
 	private:
@@ -37,7 +37,7 @@ namespace Engine
 
 	public:
 		
-		KeyPressedEvent(int32_t keycode, int32_t repeatCount) :
+		KeyPressEvent(int32_t keycode, int32_t repeatCount) :
 			KeyEvent(keycode),
 			m_repeatCount(repeatCount)
 		{} //!< Default constructor
@@ -52,11 +52,11 @@ namespace Engine
 	/**
     \class KeyReleasedEvent - The key release event
     */
-	class KeyReleasedEvent : public KeyEvent
+	class KeyReleaseEvent : public KeyEvent
 	{
 
 	public:
-		KeyReleasedEvent(int32_t keycode) : 
+		KeyReleaseEvent(int32_t keycode) : 
 			KeyEvent(keycode)
 		{} //!< Default constructor
 
@@ -69,10 +69,10 @@ namespace Engine
 	/**
     \class KeyTypedEvent - The key type event
     */
-	class KeyTypedEvent : public KeyEvent
+	class KeyTypeEvent : public KeyEvent
 	{
 	public:
-		KeyTypedEvent(int32_t keycode) :
+		KeyTypeEvent(int32_t keycode) :
 			KeyEvent(keycode)
 		{} //!< Default constructor
 
