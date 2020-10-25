@@ -3,12 +3,10 @@
 #pragma once
 
 #include "events/eventHandler.h"
+#include<tuple>
 
 namespace Engine
 {
-	/**\class Window 
-	*Abstract windows base class. All implemented windows should code to this interface.
-	*/
 
 	struct WindowProperties
 	{
@@ -18,6 +16,7 @@ namespace Engine
 		bool m_isFullscreen;
 		bool m_isVSync;
 
+		//replace this using std::tuple
 		WindowProperties(char* title = "My Window", uint32_t width = 800, uint32_t height = 600, bool isFullscreen = false) :
 			m_title(title),
 			m_width(width),
@@ -26,6 +25,10 @@ namespace Engine
 		{};
 	};
 
+
+	/**\class Window
+    *Abstract windows base class. All implemented windows should code to this interface.
+    */
 	class Window
 	{
 	protected:

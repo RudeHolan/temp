@@ -24,7 +24,6 @@ namespace Engine {
 		m_logSystem->start();
 
 		// Start windows System
-
 #ifdef NG_PLATFORM_WINDOWS
 		m_windowsSystem.reset(new GLFWSystem);
 #endif
@@ -36,11 +35,14 @@ namespace Engine {
 		m_timer->start();
 
 		// Create a window
-		WindowProperties props("My Game Engine", 1024, 800);
+		WindowProperties props("My Game Engine", 1920, 1080, false);
 		m_window.reset(Window::create(props));
 
-		m_handler.setOnWindowCloseCallback(std::bind(&Application::onClose, this, std::placeholders::_1));
- 
+		m_window->getEventHandler().setOnWindowCloseCallback(std::bind(&Application::onClose, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnWindowResizeCallback(std::bind(&Application::onResize, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnKeyPressCallback(std::bind(&Application::onKeyPress, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnKeyReleaseCallback(std::bind(&Application::onKeyRelease, this, std::placeholders::_1));
+
 		m_timer->reset();
 	}
 
@@ -48,11 +50,39 @@ namespace Engine {
 
 	bool Application::onClose(WindowCloseEvent & e)
 	{
-		
 		e.handle(true);
 		m_running = false;
 		return e.isHandled();
 	}
+
+
+	bool Application::onResize(WindowResizeEvent& e)
+	{
+		e.handle(true);
+		auto& size = e.getSize();
+		Log::info("Window resize event: ({0}, {1}", size.x, size.y);
+		return e.isHandled();
+	}
+
+
+	bool Application::onKeyPress(KeyPressEvent& e)
+	{
+		e.handle(true);
+		auto keyCode = e.getKeyCode();
+		auto repeatCount = e.getRepeatCount();
+		Log::info("Key pressed info - KeyCode: {0}, RepeatCount: {1}", keyCode, repeatCount);
+		return e.isHandled();
+	}
+
+
+	bool Application::onKeyRelease(KeyReleaseEvent& e)
+	{
+		e.handle(true);
+		auto keyCode = e.getKeyCode();
+		Log::info("Key released info -KeyCode: {0}", keyCode);
+		return e.isHandled();
+	}
+
 
 	Application::~Application()
 	{
@@ -75,18 +105,9 @@ namespace Engine {
 		{
 				timestep = m_timer->getElapsedTime();
 				m_timer->reset();
-				//Log::trace("FPS {0}", 1.0f / timestep);
-
-				accumulatedTime += timestep;
-				if (accumulatedTime > 1.5f)
-				{
-					WindowCloseEvent close;
-					auto& callback = m_handler.m_getOnWindowCloseCallback();
-					callback(close);
-				}
+				m_window->onUpdate(timestep);
 				
-
 		};
 	}
-
+		
 }

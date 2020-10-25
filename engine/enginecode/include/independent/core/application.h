@@ -30,9 +30,11 @@ namespace Engine {
 		std::shared_ptr<ITimer> m_timer; //!< Timer
 		std::shared_ptr<Window> m_window; //!< Window
 
-		EventHandler m_handler; //!< This is the event handler
 
 		bool onClose(WindowCloseEvent& e); //!< Run when the window closes
+		bool onResize(WindowResizeEvent& e); //!< Run when the window is resized
+		bool onKeyPress(KeyPressEvent& e); //!< Run when a key is pressed
+		bool onKeyRelease(KeyReleaseEvent& e); //!< Run when a key is released
 
 	public:
 		virtual ~Application(); //!< Deconstructor
