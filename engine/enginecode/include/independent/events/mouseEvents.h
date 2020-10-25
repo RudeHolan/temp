@@ -28,7 +28,7 @@ namespace Engine
 	public:
 		MouseButtonPressEvent(int32_t button) :
 			m_button(button)
-		{} //!< Default constructor
+		{} //!< Constructor
 
 		static EventType getStaticType() { return EventType::MouseButtonPressed; } //!< Return static type
 		inline virtual EventType getEventType() const override { return getStaticType(); } //!< Get the event type
@@ -48,7 +48,7 @@ namespace Engine
 	public:
 		MouseButtonReleaseEvent(int32_t button) :
 			m_button(button)
-		{} //!< Default constructor
+		{} //!< Constructor
 
 		static EventType getStaticType() { return EventType::MouseButtonReleased; } //!< Return static type
 		inline virtual EventType getEventType() const override { return getStaticType(); } //!< Get the event type
@@ -70,7 +70,7 @@ namespace Engine
 		MouseMoveEvent(float x, float y) :
 			m_mouseX(x),
 			m_mouseY(y)
-		{} //!< Default constructor
+		{} //!< Constructor
 
 		static EventType getStaticType() { return EventType::MouseMoved; } //!< Return static type
 		inline virtual EventType getEventType() const override { return getStaticType(); } //!< Get the event type
@@ -92,6 +92,11 @@ namespace Engine
 		float m_offsetY;
 
 	public:
+		MouseScrollEvent(float xOffset, float yOffset) :
+			m_offsetX(xOffset),
+			m_offsetY(yOffset)
+		{}//!< Constructor 
+
 		static EventType getStaticType() { return EventType::MouseScrolled; } //!< Return static type
 		inline virtual EventType getEventType() const override { return getStaticType(); } //!< Get the event type
 		inline float getOffsetX() const { return m_offsetX; } //!< Get the X offset

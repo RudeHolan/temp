@@ -44,7 +44,7 @@ namespace Engine
 		WindowResizeEvent(int32_t width, int32_t height) :
 			m_width(width),
 			m_height(height) 
-		{} //!< Default constructor
+		{} //!< Constructor
 
 		static EventType getStaticType() { return EventType::WindowResize; } //!< Return static type
 		inline virtual EventType getEventType() const override { return EventType::WindowResize; }; //!< Get the event type
@@ -59,10 +59,14 @@ namespace Engine
 	*/
 	class WindowFocusEvent : public WindowEvent
 	{
+	private: 
+		int focus;
+
 	public:
-		WindowFocusEvent() {} //!< Default constructor
+		WindowFocusEvent(int f) : focus(f) {}; //!< Constructor
 		static EventType getStaticType() { return EventType::WindowFocus; } //!< Return static type
-		inline virtual EventType getEventType() const override { return EventType::WindowResize; }; //!< Get the event type
+		inline virtual EventType getEventType() const override { return EventType::WindowFocus; }; //!< Get the event type
+		inline int getFocus() const { return focus; }
 	};
 
 
@@ -71,10 +75,14 @@ namespace Engine
 	*/
 	class WindowLostFocusEvent : public WindowEvent
 	{
+	private:
+		int focus;
+
 	public:
-		WindowLostFocusEvent() {} //!< Default constructor
+		WindowLostFocusEvent(int f) : focus(f) {} //!< Constructor 
 		static EventType getStaticType() { return EventType::WindowLostFocus; } //!< Return static type
-		inline virtual EventType getEventType() const override { return EventType::WindowResize; }; //!< Get the event type
+		inline virtual EventType getEventType() const override { return EventType::WindowLostFocus; }; //!< Get the event type
+		inline int getFocus() const { return focus; }
 	};
 
 
@@ -91,10 +99,10 @@ namespace Engine
 		WindowMoveEvent(int32_t x, int32_t y) :
 			m_posX(x),
 			m_posY(y)
-		{} //!< Default constructor
+		{} //!< Constructor
 
 		static EventType getStaticType() { return EventType::WindowMoved; } //!< Return static type
-		inline virtual EventType getEventType() const override { return EventType::WindowResize; }; //!< Get the event type
+		inline virtual EventType getEventType() const override { return EventType::WindowMoved; }; //!< Get the event type
 		inline int32_t getPosX() const { return m_posX; }
 		inline int32_t getPosY() const { return m_posY; }
 		inline glm::ivec2 getPos() const { return { m_posX, m_posY }; }

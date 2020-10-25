@@ -33,8 +33,18 @@ namespace Engine {
 
 		bool onClose(WindowCloseEvent& e); //!< Run when the window closes
 		bool onResize(WindowResizeEvent& e); //!< Run when the window is resized
+		bool onWindowMove(WindowMoveEvent& e); //!< Run when the window is moved
+		bool onFocus(WindowFocusEvent& e);
+		bool onLostFocus(WindowLostFocusEvent& e);
+
 		bool onKeyPress(KeyPressEvent& e); //!< Run when a key is pressed
 		bool onKeyRelease(KeyReleaseEvent& e); //!< Run when a key is released
+		bool onKeyType(KeyTypeEvent& e); //!< Run when a text is typed
+
+		bool onButtonPress(MouseButtonPressEvent& e); //!< Run when a mouse button is pressed
+		bool onButtonRelease(MouseButtonReleaseEvent& e); //!< Run when a mouse button is released
+		bool onScroll(MouseScrollEvent& e); //!< Run when the mouse scroll is used
+		bool onMouseMove(MouseMoveEvent& e); //!< Run when the mouse is moved
 
 	public:
 		virtual ~Application(); //!< Deconstructor

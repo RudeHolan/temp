@@ -36,7 +36,7 @@ namespace Engine {
 		glfwSetWindowUserPointer(m_native, static_cast<void*>(&m_handler));
 
 
-		// Setting the callbacks
+		// Setting the window callbacks
 		glfwSetWindowCloseCallback(m_native,
 			[](GLFWwindow* window)
 		{
@@ -46,7 +46,6 @@ namespace Engine {
 			onClose(e);
 		}
 		);
-
 
 		glfwSetWindowSizeCallback(m_native,
 			[](GLFWwindow* window, int newWidth, int newHeight)
@@ -58,6 +57,36 @@ namespace Engine {
 		}
 		);
 
+		glfwSetWindowPosCallback(m_native,
+			[](GLFWwindow* window, int posX, int posY)
+		{
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			auto& onWindowMove = handler->m_getOnWindowMoveCallback();
+			WindowMoveEvent e(posX, posY);
+			onWindowMove(e);
+		}
+		);
+
+		glfwSetWindowFocusCallback(m_native,
+			[](GLFWwindow* window, int focused)
+		{			
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			if (focused) {
+				auto& onFocus = handler->m_getOnWindowFocusCallback();
+				WindowFocusEvent e(focused);
+				onFocus(e);
+			}
+			else
+			{
+				auto& lostFocus = handler->m_getOnWindowLostFocusCallback();
+				WindowLostFocusEvent e(focused);
+				lostFocus(e);
+			}
+		}
+		);
+
+
+		// Setting the key callbacks
 		glfwSetKeyCallback(m_native,
 			[](GLFWwindow* window, int keyCode, int scancode, int action, int mods)
 		{
@@ -79,10 +108,61 @@ namespace Engine {
 				KeyReleaseEvent e(keyCode);
 				onKeyRelease(e);
 			}
-
-
 		}
 		);
+
+		glfwSetCharCallback(m_native,
+			[](GLFWwindow* window, unsigned int codepoint)
+		{
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			auto& onKeyType = handler->m_getOnKeyTypeCallback();
+			KeyTypeEvent e(codepoint);
+			onKeyType(e);
+		}
+		);
+
+
+		//Setting the mouse callbacks
+		glfwSetMouseButtonCallback(m_native,
+			[](GLFWwindow* window, int button, int action, int mods)
+		{
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			if (action == GLFW_PRESS)
+			{
+				auto& onButtonPress = handler->m_getOnMouseButtonPressCallback();
+				MouseButtonPressEvent e(button);
+				onButtonPress(e);
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				auto& onButtonRelease = handler->m_getOnMouseButtonReleaseCallback();
+				MouseButtonReleaseEvent e(button);
+				onButtonRelease(e);
+			}
+		}
+		);
+
+		glfwSetScrollCallback(m_native,
+			[](GLFWwindow* window, double xOffset, double yOffset)
+		{
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			auto& onScroll = handler->m_getOnMouseScrollCallback();
+			MouseScrollEvent e(xOffset, yOffset);
+			onScroll(e);
+		}
+		);
+
+		glfwSetCursorPosCallback(m_native,
+			[](GLFWwindow* window, double posX, double posY)
+		{
+			EventHandler* handler = static_cast<EventHandler*>(glfwGetWindowUserPointer(window));
+			auto& onMove = handler->m_getOnMouseMoveCallback();
+			MouseMoveEvent e(posX, posY);
+			onMove(e);
+		}
+		);
+
+
 
 	}
 

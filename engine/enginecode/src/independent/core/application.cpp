@@ -23,6 +23,7 @@ namespace Engine {
 		m_logSystem.reset(new Log);
 		m_logSystem->start();
 
+
 		// Start windows System
 #ifdef NG_PLATFORM_WINDOWS
 		m_windowsSystem.reset(new GLFWSystem);
@@ -34,14 +35,26 @@ namespace Engine {
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
 
+
 		// Create a window
 		WindowProperties props("My Game Engine", 1920, 1080, false);
 		m_window.reset(Window::create(props));
 
+
 		m_window->getEventHandler().setOnWindowCloseCallback(std::bind(&Application::onClose, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnWindowResizeCallback(std::bind(&Application::onResize, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnWindowMoveCallback(std::bind(&Application::onWindowMove, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnWindowFocusCallback(std::bind(&Application::onFocus, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnWindowLostFocusCallback(std::bind(&Application::onLostFocus, this, std::placeholders::_1));
+
 		m_window->getEventHandler().setOnKeyPressCallback(std::bind(&Application::onKeyPress, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnKeyReleaseCallback(std::bind(&Application::onKeyRelease, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnKeyTypeCallback(std::bind(&Application::onKeyType, this, std::placeholders::_1));
+
+		m_window->getEventHandler().setOnMouseButtonPressCallback(std::bind(&Application::onButtonPress, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnMouseButtonReleaseCallback(std::bind(&Application::onButtonRelease, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnMouseScrollCallback(std::bind(&Application::onScroll, this, std::placeholders::_1));
+		m_window->getEventHandler().setOnMouseMoveCallback(std::bind(&Application::onMouseMove, this, std::placeholders::_1));
 
 		m_timer->reset();
 	}
@@ -60,7 +73,31 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto& size = e.getSize();
-		Log::info("Window resize event: ({0}, {1}", size.x, size.y);
+		Log::info("Window resizeed info - size X: {0}; size Y: {1}", size.x, size.y);
+		return e.isHandled();
+	}
+
+	bool Application::onWindowMove(WindowMoveEvent& e)
+	{
+		e.handle(true);
+		auto& pos = e.getPos();
+		Log::info("Window moved (new position) info - new pos X: {0}; new pos Y: {1}", pos.x, pos.y);
+		return e.isHandled();
+	}
+
+	bool Application::onFocus(WindowFocusEvent& e)
+	{
+		e.handle(true);
+		auto focus = e.getFocus();
+		Log::info("Window focused: {0} (should be 1)", focus);
+		return e.isHandled();
+	}
+
+	bool Application::onLostFocus(WindowLostFocusEvent& e)
+	{
+		e.handle(true);
+		auto focus = e.getFocus();
+		Log::info("Window lost focus: {0} (should be 0)", focus);
 		return e.isHandled();
 	}
 
@@ -70,7 +107,7 @@ namespace Engine {
 		e.handle(true);
 		auto keyCode = e.getKeyCode();
 		auto repeatCount = e.getRepeatCount();
-		Log::info("Key pressed info - KeyCode: {0}, RepeatCount: {1}", keyCode, repeatCount);
+		Log::info("Key pressed info - Key code: {0}; Repeat count: {1}", keyCode, repeatCount);
 		return e.isHandled();
 	}
 
@@ -79,7 +116,49 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto keyCode = e.getKeyCode();
-		Log::info("Key released info -KeyCode: {0}", keyCode);
+		Log::info("Key released info - Key code: {0}", keyCode);
+		return e.isHandled();
+	}
+
+	bool Application::onKeyType(KeyTypeEvent& e)
+	{
+		e.handle(true);
+		auto codePoint = e.getKeyCode();
+		Log::info("Key typed info - Code point: {0}", codePoint);
+		return e.isHandled();
+	}
+
+	bool Application::onButtonPress(MouseButtonPressEvent& e)
+	{
+		e.handle(true);
+		auto button = e.getButton();
+		Log::info("Mouse button pressed info - Key code: {0}", button);
+		return e.isHandled();
+	}
+
+	bool Application::onButtonRelease(MouseButtonReleaseEvent& e)
+	{
+		e.handle(true);
+		auto button = e.getButton();
+		Log::info("Mouse button released info - Key code: {0}", button);
+		return e.isHandled();
+	}
+
+	bool Application::onScroll(MouseScrollEvent& e)
+	{
+		e.handle(true);
+		auto offX = e.getOffsetX();
+		auto offY = e.getOffsetY();
+		Log::info("Mouse Scroll info - X offset: {0}; Y offset: {1}", offX, offY);
+		return e.isHandled();
+	}
+
+	bool Application::onMouseMove(MouseMoveEvent& e)
+	{
+		e.handle(true);
+		auto posX = e.getX();
+		auto posY = e.getY();
+		//Log::info("Mouse position info - X possition: {0}; Y possition:{1}", posX, posY); 
 		return e.isHandled();
 	}
 
