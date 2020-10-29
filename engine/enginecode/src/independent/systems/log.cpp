@@ -9,7 +9,7 @@ namespace Engine {
 	std::shared_ptr<spdlog::logger> Log::s_fileLogger = nullptr;
 
 
-	void Engine::Log::start(SystemSignal init, ...)
+	void Log::start(SystemSignal init, ...)
 	{
 		spdlog::set_pattern("%^[%T]: %v%$");
 		spdlog::set_level(spdlog::level::trace);
@@ -34,7 +34,7 @@ namespace Engine {
 
 	}
 
-	void Engine::Log::stop(SystemSignal close, ...)
+	void Log::stop(SystemSignal close, ...)
 	{
 		s_consoleLogger->info("Stopping console logger");
 		s_consoleLogger.reset();

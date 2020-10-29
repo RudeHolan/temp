@@ -2,10 +2,14 @@
 */
 
 #include "engine_pch.h"
+#include <glad/glad.h>
+
 #include "core/application.h"
+
 #ifdef NG_PLATFORM_WINDOWS
 #include "platform/GLFW/GLFWSystem.h"
 #endif
+
 
 namespace Engine {
 	// Set static vars
@@ -49,12 +53,14 @@ namespace Engine {
 
 		m_window->getEventHandler().setOnKeyPressCallback(std::bind(&Application::onKeyPress, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnKeyReleaseCallback(std::bind(&Application::onKeyRelease, this, std::placeholders::_1));
-		m_window->getEventHandler().setOnKeyTypeCallback(std::bind(&Application::onKeyType, this, std::placeholders::_1));
+		//m_window->getEventHandler().setOnKeyTypeCallback(std::bind(&Application::onKeyType, this, std::placeholders::_1));
 
 		m_window->getEventHandler().setOnMouseButtonPressCallback(std::bind(&Application::onButtonPress, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnMouseButtonReleaseCallback(std::bind(&Application::onButtonRelease, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnMouseScrollCallback(std::bind(&Application::onScroll, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnMouseMoveCallback(std::bind(&Application::onMouseMove, this, std::placeholders::_1));
+
+		InputPoller::setNativeWindow(m_window->getNativeWindow());
 
 		m_timer->reset();
 	}
@@ -116,17 +122,24 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto keyCode = e.getKeyCode();
-		Log::info("Key released info - Key code: {0}", keyCode);
+		if (keyCode == 96) {
+			system("cls");
+			Log::info("Key released info - Key code: {0} (console is cleared)", keyCode);
+		}
+		else
+		{
+			Log::info("Key released info - Key code: {0}", keyCode);
+		}
 		return e.isHandled();
 	}
 
-	bool Application::onKeyType(KeyTypeEvent& e)
+	/*bool Application::onKeyType(KeyTypeEvent& e)
 	{
 		e.handle(true);
 		auto codePoint = e.getKeyCode();
 		Log::info("Key typed info - Code point: {0}", codePoint);
 		return e.isHandled();
-	}
+	}*/
 
 	bool Application::onButtonPress(MouseButtonPressEvent& e)
 	{
@@ -178,12 +191,16 @@ namespace Engine {
 	{
 
 		float timestep = 0.f;
-		float accumulatedTime = 0.f;
-
+		glEnable(GL_DEPTH);
+		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
 				m_timer->reset();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				if (InputPoller::isKeyPressed(65)) Log::error("A is pressed");
+				if (InputPoller::isMouseButtonPressed(0)) Log::error("Left mouse button is pressed");
+
 				m_window->onUpdate(timestep);
 				
 		};

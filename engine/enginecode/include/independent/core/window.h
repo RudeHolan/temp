@@ -4,6 +4,7 @@
 
 #include "events/eventHandler.h"
 #include<tuple>
+#include"core/graphicsContext.h"
 
 namespace Engine
 {
@@ -33,6 +34,7 @@ namespace Engine
 	{
 	protected:
 		EventHandler m_handler; //!< Event handler 
+		std::shared_ptr<GraphicsContext> m_graphicsContext;
 
 	public:
 		virtual void init(const WindowProperties& properties) = 0; //!< Initialise the window

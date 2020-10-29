@@ -2,6 +2,7 @@
 
 #include "engine_pch.h"
 #include "platform/GLFW/GLFWWindowImpl.h"
+#include "platform/GLFW/GLFW_OpenGL_GC.h"
 #include "systems/log.h"
 
 namespace Engine {
@@ -32,6 +33,9 @@ namespace Engine {
 		{
 			m_native = glfwCreateWindow(m_props.m_width, m_props.m_height,m_props.m_title, nullptr , nullptr);
 		}
+
+		m_graphicsContext.reset(new GLFW_OpenGL_GC(m_native));
+		m_graphicsContext->init();
 
 		glfwSetWindowUserPointer(m_native, static_cast<void*>(&m_handler));
 
@@ -174,6 +178,7 @@ namespace Engine {
 	void GLFWWindowImpl::onUpdate(float timestep)
 	{
 		glfwPollEvents();
+		m_graphicsContext->swapBuffers();
 	}
 
 	void GLFWWindowImpl::setVSync(bool VSync)

@@ -7,6 +7,8 @@
 #include "events/events.h"
 #include "events/eventHandler.h"
 #include "core/window.h"
+#include "core/inputPoller.h"
+
 
 namespace Engine {
 
@@ -39,7 +41,7 @@ namespace Engine {
 
 		bool onKeyPress(KeyPressEvent& e); //!< Run when a key is pressed
 		bool onKeyRelease(KeyReleaseEvent& e); //!< Run when a key is released
-		bool onKeyType(KeyTypeEvent& e); //!< Run when a text is typed
+		//bool onKeyType(KeyTypeEvent& e); //!< Run when a text is typed
 
 		bool onButtonPress(MouseButtonPressEvent& e); //!< Run when a mouse button is pressed
 		bool onButtonRelease(MouseButtonReleaseEvent& e); //!< Run when a mouse button is released
@@ -49,6 +51,7 @@ namespace Engine {
 	public:
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern
+		inline std::shared_ptr<Window>& getWindow() { return m_window; }
 		void run(); //!< Main loop
 		
 	};
