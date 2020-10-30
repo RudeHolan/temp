@@ -79,7 +79,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto& size = e.getSize();
-		Log::info("Window resizeed info - size X: {0}; size Y: {1}", size.x, size.y);
+		//Log::info("Window resizeed info - size X: {0}; size Y: {1}", size.x, size.y);
 		return e.isHandled();
 	}
 
@@ -87,7 +87,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto& pos = e.getPos();
-		Log::info("Window moved (new position) info - new pos X: {0}; new pos Y: {1}", pos.x, pos.y);
+		//Log::info("Window moved (new position) info - new pos X: {0}; new pos Y: {1}", pos.x, pos.y);
 		return e.isHandled();
 	}
 
@@ -95,7 +95,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto focus = e.getFocus();
-		Log::info("Window focused: {0} (should be 1)", focus);
+		//Log::info("Window focused: {0} (should be 1)", focus);
 		return e.isHandled();
 	}
 
@@ -103,7 +103,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto focus = e.getFocus();
-		Log::info("Window lost focus: {0} (should be 0)", focus);
+		//Log::info("Window lost focus: {0} (should be 0)", focus);
 		return e.isHandled();
 	}
 
@@ -113,7 +113,7 @@ namespace Engine {
 		e.handle(true);
 		auto keyCode = e.getKeyCode();
 		auto repeatCount = e.getRepeatCount();
-		Log::info("Key pressed info - Key code: {0}; Repeat count: {1}", keyCode, repeatCount);
+		//Log::info("Key pressed info - Key code: {0}; Repeat count: {1}", keyCode, repeatCount);
 		return e.isHandled();
 	}
 
@@ -124,11 +124,11 @@ namespace Engine {
 		auto keyCode = e.getKeyCode();
 		if (keyCode == 96) {
 			system("cls");
-			Log::info("Key released info - Key code: {0} (console is cleared)", keyCode);
+			//Log::info("Key released info - Key code: {0} (console is cleared)", keyCode);
 		}
 		else
 		{
-			Log::info("Key released info - Key code: {0}", keyCode);
+			//Log::info("Key released info - Key code: {0}", keyCode);
 		}
 		return e.isHandled();
 	}
@@ -145,7 +145,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto button = e.getButton();
-		Log::info("Mouse button pressed info - Key code: {0}", button);
+		//Log::info("Mouse button pressed info - Key code: {0}", button);
 		return e.isHandled();
 	}
 
@@ -153,7 +153,7 @@ namespace Engine {
 	{
 		e.handle(true);
 		auto button = e.getButton();
-		Log::info("Mouse button released info - Key code: {0}", button);
+		//Log::info("Mouse button released info - Key code: {0}", button);
 		return e.isHandled();
 	}
 
@@ -162,7 +162,7 @@ namespace Engine {
 		e.handle(true);
 		auto offX = e.getOffsetX();
 		auto offY = e.getOffsetY();
-		Log::info("Mouse Scroll info - X offset: {0}; Y offset: {1}", offX, offY);
+		//Log::info("Mouse Scroll info - X offset: {0}; Y offset: {1}", offX, offY);
 		return e.isHandled();
 	}
 
@@ -191,7 +191,7 @@ namespace Engine {
 	{
 
 		float timestep = 0.f;
-		glEnable(GL_DEPTH);
+		glEnable(GL_DEPTH_TEST);
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		while (m_running)
 		{
