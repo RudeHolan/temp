@@ -17,11 +17,11 @@ namespace Engine
 		static GLFWwindow* s_window; //!< Current GLFW window
 
 	public:
-		static bool isKeyPressed(int32_t keyCode);
-		static bool isMouseButtonPressed(int32_t mouseButton);
-		static glm::vec2 getMousePos();
+		static bool isKeyPressed(int32_t keyCode); //!< is a key pressed and which key 
+		static bool isMouseButtonPressed(int32_t mouseButton);  //!< is a mouse button pressed
+		static glm::vec2 getMousePos(); //!< get the cursos location
 
-		static void setCurrentWindow(GLFWwindow* newWindow) { s_window = newWindow; }
+		static void setCurrentWindow(GLFWwindow* newWindow) { s_window = newWindow; } //!< Set the current window  
 
 
 	};

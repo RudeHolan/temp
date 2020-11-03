@@ -51,7 +51,7 @@ namespace Engine
 				Log::info(message);
 				break;
 			case GL_DEBUG_SEVERITY_NOTIFICATION:
-				//Log::trace(message);
+				Log::trace(message);
 				break;
 			}
 		}, nullptr);

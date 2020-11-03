@@ -31,7 +31,7 @@ namespace Engine
     *Abstract windows base class. All implemented windows should code to this interface.
     */
 	class Window
-	{
+	{ 
 	protected:
 		EventHandler m_handler; //!< Event handler 
 		std::shared_ptr<GraphicsContext> m_graphicsContext;
