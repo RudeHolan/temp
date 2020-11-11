@@ -334,14 +334,9 @@ namespace Engine {
 
 
 
-		glm::mat4 view = glm::lookAt(
-		    glm::vec3(0.f,0.f,0.f),
-			glm::vec3(0.,0.f,-1),
-			glm::vec3(0.,1.f,0.f)
-		);
+		glm::mat4 view = glm::lookAt( glm::vec3(0.f,0.f,0.f), glm::vec3(0.,0.f,-1), glm::vec3(0.,1.f,0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
 		glm::mat4 models[3];
-
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));
 		models[2] = glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.f, -6.f));

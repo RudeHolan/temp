@@ -22,6 +22,8 @@ namespace Engine
 		inline uint32_t getRenderID() { return m_OpenGL_ID; }
 		inline uint32_t getWidth() { return m_width; }
 		inline uint32_t getHeight() { return m_height; }
+		inline uint32_t getWidthf() { return static_cast<float>(m_width); }
+		inline uint32_t getHeightf() { return static_cast<float>(m_height); }
 		inline uint32_t getChannels() { return m_channels; }
 	};
 }
