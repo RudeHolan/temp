@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "platform/OpenGL/OpenGLTexture.h"
+#include "rendering/texture.h"
 #include <memory>
 #include <glm/glm.hpp>
 
@@ -13,14 +13,14 @@ namespace Engine
 	class SubTexture
 	{
 	private:
-		std::shared_ptr<OpenGLTexture> m_texture; //!< The texture 
+		std::shared_ptr<Texture> m_texture; //!< The texture 
 		glm::vec2 m_UVStart;  //!< UV start coordinates
 		glm::vec2 m_UVEnd; //!< UV end coordinates
 		glm::ivec2 m_size; //!< Size in pixels
 
 	public:
-		SubTexture();   //!< default constructor
-		SubTexture(const std::shared_ptr<OpenGLTexture>& texture, const glm::vec2& UVStart, const glm::vec2& UVEnd); //!< Constructor
+		SubTexture() {};   //!< default constructor
+		SubTexture(const std::shared_ptr<Texture>& texture, const glm::vec2& UVStart, const glm::vec2& UVEnd); //!< Constructor
 		inline glm::vec2 getUVStart() { return m_UVStart; } //!< Get the UV start
 		inline glm::vec2 getUVEnd() { return m_UVEnd; } //!< Get the UV End
 		glm::ivec2 getSize() { return m_size; } //!< get the size

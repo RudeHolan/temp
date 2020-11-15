@@ -1,14 +1,13 @@
 /*\ file OpenGLIndexBuffer.h */
 #pragma once
 
-#include <cstdint>
 #include "rendering/indexBuffer.h"
+
 namespace Engine
 {
 	/**\class OpenGLIndexBuffer
     * This class creates an OpenGL Index Buffer
     */
-
 
 	class OpenGLIndexBuffer : public IndexBuffer
 	{

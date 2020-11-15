@@ -13,14 +13,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "platform/OpenGL/OpenGLVertexArray.h"
-#include "platform/OpenGL/OpenGLShader.h"
-#include "platform/OpenGL/OpenGLTexture.h"
 
 #include "rendering/indexBuffer.h"#
 #include "rendering/vertexBuffer.h"
 #include "rendering/vertexArray.h"
 #include "rendering/subTexture.h"
+#include "rendering/shader.h"
+#include "rendering/texture.h"
 
 namespace Engine {
 	// Set static vars
@@ -203,51 +202,86 @@ namespace Engine {
 
 #pragma region TEXTURES
 
-		std::shared_ptr<OpenGLTexture> letterTexture;
-		letterTexture.reset(new OpenGLTexture("assets/textures/letterAndNumberCube.png"));
+		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture;
+		letterTexture.reset(Texture::create("assets/textures/letterCube.png"));
+		numberTexture.reset(Texture::create("assets/textures/numberCube.png"));
+		letterAndNumbertexture.reset(Texture::create("assets/textures/letterAndNumberCube.png"));
 
-		std::shared_ptr<OpenGLTexture> numberTexture;
-		numberTexture.reset(new OpenGLTexture("assets/textures/numberCube.png"));
-
-		SubTexture letterCube(letterTexture, { 0.f,0.f }, { 1.0f,0.5f });
-		SubTexture numberCube(letterTexture, { 0.f,0.5f }, { 1.0f,1.0f });
+		
+		SubTexture letterCube(letterAndNumbertexture, { 0.f,0.f }, { 1.0f,0.5f });
+		SubTexture numberCube(letterAndNumbertexture, { 0.f,0.5f }, { 1.0f,1.0f });
+		
 
 #pragma endregion
 
 #pragma region RAW_DATA
 
+		
+		//
+		// This is raw data using subtextures (uncomment the subtextures created in the TEXTURES region) 
+		//
+
 		float cubeVertices[8 * 24] = {
 			//	 <------ Pos ------>  <--- normal --->  <-------------------------- UV -------------------------->
-				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  numberCube.transformU(0.f),   numberCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  numberCube.transformU(0.f),   numberCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  numberCube.transformU(0.33f), numberCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  numberCube.transformU(0.33f), numberCube.transformV(0.f),
-																					  
-				-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  numberCube.transformU(0.33f), numberCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  numberCube.transformU(0.66f), numberCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  numberCube.transformU(0.66f), numberCube.transformV(0.f),
-				-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  numberCube.transformU(0.33),  numberCube.transformV(0.f),
-																					
-				-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  numberCube.transformU(1.f),   numberCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(0.f),
-				 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(0.5f),
-				-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  numberCube.transformU(1.0f),  numberCube.transformV(0.5f),
-																					
-				 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  numberCube.transformU(0.f),   numberCube.transformV(0.5f),
-				 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  numberCube.transformU(0.f),   numberCube.transformV(1.0f),
-				-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  numberCube.transformU(0.33f), numberCube.transformV(1.0f),
-				-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  numberCube.transformU(0.3f),  numberCube.transformV(0.5f),
-																					
-				-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  numberCube.transformU(0.33f), numberCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  numberCube.transformU(0.33f), numberCube.transformV(1.0f),
-				-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(1.0f),
-																				
-				 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  numberCube.transformU(1.0f),  numberCube.transformV(1.0f),
-				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  numberCube.transformU(1.0f),  numberCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  numberCube.transformU(0.66f), numberCube.transformV(1.0f)
+				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
+				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
+				-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+				-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33),  letterCube.transformV(0.f),
+				-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(1.f),   letterCube.transformV(0.f),
+				 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+				 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+				 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(1.0f),
+				-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+				-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.3f),  letterCube.transformV(0.5f),
+				-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+				-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f),
+				 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(1.0f),
+				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
 		};
+		
+
+		//float cubeVertices[8 * 24] = {
+		//	//	 <------ Pos ------>  <--- normal --->  <-------------------------- UV -------------------------->
+		//		 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,   0.f,
+		//		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,   0.5f,
+		//		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f, 0.5f,
+		//		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f, 0.f,
+		//													  
+		//		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33f, 0.5f,
+		//		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f, 0.5f,
+		//		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f, 0.f,
+		//		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33,  0.f,
+		//													
+		//		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  1.f,   0.f,
+		//		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  0.66f, 0.f,
+		//		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  0.66f, 0.5f,
+		//		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  1.0f,  0.5f,
+		//													
+		//		 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.f,   0.5f,
+		//		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.f,   1.0f,
+		//		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.33f, 1.0f,
+		//		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.3f,  0.5f,
+		//													
+		//		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 0.5f,
+		//		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 0.5f,
+		//		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 1.0f,
+		//		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 1.0f,
+		//												
+		//		 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  1.0f,
+		//		 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  0.5f,
+		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
+		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
+		//};
 
 		float pyramidVertices[6 * 16] = {
 			//	 <------ Pos ------>  <--- colour ---> 
@@ -333,11 +367,11 @@ namespace Engine {
 
 #pragma region SHADERS
 
-		std::shared_ptr<OpenGLShader> FCShader;
-		FCShader.reset(new OpenGLShader("./assets/shaders/flatColour.glsl"));
+		std::shared_ptr<Shader> FCShader;
+		FCShader.reset(Shader::create("./assets/shaders/flatColour.glsl"));
 
-		std::shared_ptr<OpenGLShader> TPShader;
-		TPShader.reset(new OpenGLShader("./assets/shaders/texturedPhong.glsl"));
+		std::shared_ptr<Shader> TPShader;
+		TPShader.reset(Shader::create("./assets/shaders/texturedPhong.glsl"));
 
 #pragma endregion 
 
@@ -412,7 +446,7 @@ namespace Engine {
 				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_viewPos");
 				glUniform3f(uniformLocation, 0.f, 0.f, 0.f);
 
-				glBindTexture(GL_TEXTURE_2D, letterTexture->getRenderID());
+				glBindTexture(GL_TEXTURE_2D, letterAndNumbertexture->getRenderID());
 				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_texData");
 				glUniform1i(uniformLocation, 0);
 

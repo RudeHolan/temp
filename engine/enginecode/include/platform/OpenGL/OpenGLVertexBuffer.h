@@ -1,7 +1,6 @@
 /*\file OpenGLVertexBuffer.h*/
 #pragma once
 
-#include "rendering/bufferLayout.h" 
 #include "rendering/vertexBuffer.h"
 
 namespace Engine

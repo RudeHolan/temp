@@ -2,10 +2,6 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-#include "OpenGLVertexBuffer.h"
-#include "OpenGLIndexBuffer.h"
 #include "rendering/vertexArray.h"
 
 

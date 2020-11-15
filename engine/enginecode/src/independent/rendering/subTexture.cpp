@@ -5,11 +5,8 @@
 
 namespace Engine {
 
-	SubTexture::SubTexture()
-	{
-	}
 
-	SubTexture::SubTexture(const std::shared_ptr<OpenGLTexture>& texture, const glm::vec2& UVStart, const glm::vec2& UVEnd) :
+	SubTexture::SubTexture(const std::shared_ptr<Texture>& texture, const glm::vec2& UVStart, const glm::vec2& UVEnd) :
 		m_texture(texture),
 		m_UVStart(UVStart),
 		m_UVEnd(UVEnd)
