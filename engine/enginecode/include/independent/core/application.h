@@ -51,7 +51,7 @@ namespace Engine {
 	public:
 		virtual ~Application(); //!< Deconstructor
 		inline static Application& getInstance() { return *s_instance; } //!< Instance getter from singleton pattern
-		inline std::shared_ptr<Window>& getWindow() { return m_window; }
+		inline std::shared_ptr<Window>& getWindow() { return m_window; } //!< Get the window
 		void run(); //!< Main loop
 		
 	};

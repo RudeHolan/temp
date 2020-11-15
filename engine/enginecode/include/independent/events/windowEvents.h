@@ -48,9 +48,9 @@ namespace Engine
 
 		static EventType getStaticType() { return EventType::WindowResize; } //!< Return static type
 		inline virtual EventType getEventType() const override { return EventType::WindowResize; }; //!< Get the event type
-		inline int32_t getWidth() const { return m_width; }
-		inline int32_t getHeight() const { return m_height; }
-		inline glm::ivec2 getSize() const { return { m_width, m_height }; }
+		inline int32_t getWidth() const { return m_width; } //!< Get the width of the window
+		inline int32_t getHeight() const { return m_height; } //!< Get the height of the window
+		inline glm::ivec2 getSize() const { return { m_width, m_height }; } //!< Get the size of the window
 	};
 
 
@@ -60,13 +60,13 @@ namespace Engine
 	class WindowFocusEvent : public WindowEvent
 	{
 	private: 
-		int focus;
+		int focus; //!< this int is 1 when the window is focused and 0 when the window has lost focus
 
 	public:
 		WindowFocusEvent(int f) : focus(f) {}; //!< Constructor
 		static EventType getStaticType() { return EventType::WindowFocus; } //!< Return static type
 		inline virtual EventType getEventType() const override { return EventType::WindowFocus; }; //!< Get the event type
-		inline int getFocus() const { return focus; }
+		inline int getFocus() const { return focus; } //!< Check if the window is on focus
 	};
 
 
@@ -76,13 +76,13 @@ namespace Engine
 	class WindowLostFocusEvent : public WindowEvent
 	{
 	private:
-		int focus;
+		int focus; //!< this int is 1 when the window is focused and 0 when the window has lost focus
 
 	public:
 		WindowLostFocusEvent(int f) : focus(f) {} //!< Constructor 
 		static EventType getStaticType() { return EventType::WindowLostFocus; } //!< Return static type
 		inline virtual EventType getEventType() const override { return EventType::WindowLostFocus; }; //!< Get the event type
-		inline int getFocus() const { return focus; }
+		inline int getFocus() const { return focus; } //!< Check if the window has lost focus
 	};
 
 
@@ -92,8 +92,8 @@ namespace Engine
 	class WindowMoveEvent : public WindowEvent
 	{
 	private:
-		int32_t m_posX;
-		int32_t m_posY;
+		int32_t m_posX; //!< Position X of the window
+		int32_t m_posY; //!< Position Y of the window
 
 	public:
 		WindowMoveEvent(int32_t x, int32_t y) :
@@ -103,9 +103,9 @@ namespace Engine
 
 		static EventType getStaticType() { return EventType::WindowMoved; } //!< Return static type
 		inline virtual EventType getEventType() const override { return EventType::WindowMoved; }; //!< Get the event type
-		inline int32_t getPosX() const { return m_posX; }
-		inline int32_t getPosY() const { return m_posY; }
-		inline glm::ivec2 getPos() const { return { m_posX, m_posY }; }
+		inline int32_t getPosX() const { return m_posX; } //!< Get the X position of the window
+		inline int32_t getPosY() const { return m_posY; } //!< Get the Y position of the window
+		inline glm::ivec2 getPos() const { return { m_posX, m_posY }; } //!< Get both the X and Y position of the window 
 	};
 
 

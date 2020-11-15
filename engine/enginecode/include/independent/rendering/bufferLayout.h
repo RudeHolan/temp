@@ -49,8 +49,8 @@ namespace Engine
 		void addElement(BufferElement dataType); //!< add an element to the buffer layout
 		inline std::vector<BufferElement>::iterator begin() { return m_elements.begin(); } //!< the first element of the vector
 		inline std::vector<BufferElement>::iterator end() { return m_elements.end(); } //!< the last element of the vector
-		inline std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
-		inline std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
+		inline std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); } //!< Get the first element of the buffer element vector
+		inline std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); } //!< Get the last element of the buffer element vector
 	};
 
 

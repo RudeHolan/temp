@@ -12,9 +12,14 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include "platform/OpenGL/OpenGLVertexArray.h"
 #include "platform/OpenGL/OpenGLShader.h"
 #include "platform/OpenGL/OpenGLTexture.h"
+
+#include "rendering/indexBuffer.h"#
+#include "rendering/vertexBuffer.h"
+#include "rendering/vertexArray.h"
 #include "rendering/subTexture.h"
 
 namespace Engine {
@@ -296,30 +301,30 @@ namespace Engine {
 
 #pragma region GL_BUFFERS	
 
-		std::shared_ptr<OpenGLVertexArray> cubeVAO;
-		std::shared_ptr<OpenGLVertexBuffer> cubeVBO;
-		std::shared_ptr<OpenGLIndexBuffer> cubeIBO;
+		std::shared_ptr<VertexArray> cubeVAO;
+		std::shared_ptr<VertexBuffer> cubeVBO;
+		std::shared_ptr<IndexBuffer> cubeIBO;
 
-		cubeVAO.reset(new OpenGLVertexArray);
+		cubeVAO.reset(VertexArray::create());
 
 		BufferLayout cubeBL = { ShaderDataType::Float3,ShaderDataType::Float3, ShaderDataType::Float2 };
-		cubeVBO.reset(new OpenGLVertexBuffer(cubeVertices, sizeof(cubeVertices), cubeBL));
+		cubeVBO.reset(VertexBuffer::create(cubeVertices, sizeof(cubeVertices), cubeBL));
 
-		cubeIBO.reset(new OpenGLIndexBuffer(cubeIndices, 36));
+		cubeIBO.reset(IndexBuffer::create(cubeIndices, 36));
 		
 		cubeVAO->addVertexBuffer(cubeVBO);
 		cubeVAO->setIndexBuffer(cubeIBO);
 
-		std::shared_ptr<OpenGLVertexArray> pyramidVAO;
-		std::shared_ptr<OpenGLVertexBuffer>pyramidVBO;
-		std::shared_ptr<OpenGLIndexBuffer> pyramidIBO;
+		std::shared_ptr<VertexArray> pyramidVAO;
+		std::shared_ptr<VertexBuffer>pyramidVBO;
+		std::shared_ptr<IndexBuffer> pyramidIBO;
 
-		pyramidVAO.reset(new OpenGLVertexArray);
+		pyramidVAO.reset(VertexArray::create());
 
 		BufferLayout pyramidBL = { ShaderDataType::Float3, ShaderDataType::Float3 };
-		pyramidVBO.reset(new OpenGLVertexBuffer(pyramidVertices, sizeof(pyramidVertices), pyramidBL));
+		pyramidVBO.reset(VertexBuffer::create(pyramidVertices, sizeof(pyramidVertices), pyramidBL));
 
-		pyramidIBO.reset(new OpenGLIndexBuffer(pyramidIndices, 18));
+		pyramidIBO.reset(IndexBuffer::create(pyramidIndices, 18));
 
 		pyramidVAO->addVertexBuffer(pyramidVBO);
 		pyramidVAO->setIndexBuffer(pyramidIBO);

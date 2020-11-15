@@ -34,7 +34,7 @@ namespace Engine
 	{ 
 	protected:
 		EventHandler m_handler; //!< Event handler 
-		std::shared_ptr<GraphicsContext> m_graphicsContext;
+		std::shared_ptr<GraphicsContext> m_graphicsContext; // the graphics context
 
 	public:
 		virtual void init(const WindowProperties& properties) = 0; //!< Initialise the window
@@ -50,7 +50,7 @@ namespace Engine
 
 		inline EventHandler& getEventHandler() { return m_handler; } //!< Get the event handler
 		
-		static Window* create(const WindowProperties& properties = WindowProperties());
+		static Window* create(const WindowProperties& properties = WindowProperties()); //!< Create a window
 
 
 
