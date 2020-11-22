@@ -22,6 +22,23 @@
 #include "rendering/texture.h"
 
 namespace Engine {
+
+#pragma region TEMP_CLASS
+	class FCVertex
+	{
+	private:
+		static BufferLayout s_layout;
+	public:
+		glm::vec3 m_pos;
+		glm::vec3 m_colour;
+		FCVertex() : m_pos(glm::vec3(0.f)), m_colour(glm::vec3(0.f)) {}
+		FCVertex(const glm::vec3 pos, const glm::vec3& colour) : m_pos(pos), m_colour(colour) {}
+		static BufferLayout getLayout() { return s_layout; }
+	};
+
+	BufferLayout FCVertex::s_layout = { ShaderDataType::Float3, ShaderDataType::Float3 };
+#pragma endregion
+
 	// Set static vars
 	Application* Application::s_instance = nullptr;
 
@@ -77,7 +94,7 @@ namespace Engine {
 
 
 
-	bool Application::onClose(WindowCloseEvent & e)
+	bool Application::onClose(WindowCloseEvent& e)
 	{
 		e.handle(true);
 		m_running = false;
@@ -197,6 +214,7 @@ namespace Engine {
 	}
 
 
+
 	void Application::run()
 	{
 
@@ -282,30 +300,51 @@ namespace Engine {
 		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
 		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
 		//};
+		
+		std::vector<FCVertex> pyramidVertices(16);
+		pyramidVertices.at(0) = FCVertex({-0.5f, -0.5f, -0.5f}, {0.8f, 0.2f, 0.8f});
+		pyramidVertices.at(1) = FCVertex({ 0.5f, -0.5f, -0.5f}, {0.8f, 0.2f, 0.8f});
+		pyramidVertices.at(2) = FCVertex({ 0.5f, -0.5f,  0.5f}, {0.8f, 0.2f, 0.8f});
+		pyramidVertices.at(3) = FCVertex({-0.5f, -0.5f,  0.5f}, {0.8f, 0.2f, 0.8f});
+		
+		pyramidVertices.at(4) = FCVertex({-0.5f, -0.5f, -0.5f}, {0.2f, 0.8f, 0.2f});
+		pyramidVertices.at(5) = FCVertex({-0.5f, -0.5f,  0.5f}, {0.2f, 0.8f, 0.2f});
+		pyramidVertices.at(6) = FCVertex({ 0.0f,  0.5f,  0.0f}, {0.2f, 0.8f, 0.2f});
+		pyramidVertices.at(7) = FCVertex({-0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.f });
 
-		float pyramidVertices[6 * 16] = {
-			//	 <------ Pos ------>  <--- colour ---> 
-				-0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f, //  square Magneta
-				 0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f,
-				 0.5f, -0.5f,  0.5f,  0.8f, 0.2f, 0.8f,
-				-0.5f, -0.5f,  0.5f,  0.8f, 0.2f, 0.8f,
+		pyramidVertices.at(8) = FCVertex({ 0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.f });
+		pyramidVertices.at(9) = FCVertex({ 0.0f,  0.5f,  0.0f}, {1.0f, 0.0f, 0.f });
+		pyramidVertices.at(10) = FCVertex({ 0.5f, -0.5f, 0.5f}, {0.8f, 0.8f, 0.2f});
+		pyramidVertices.at(11) = FCVertex({ 0.5f, -0.5f,-0.5f}, {0.8f, 0.8f, 0.2f});
+																 
+		pyramidVertices.at(12) = FCVertex({ 0.0f,  0.5f, 0.0f}, {0.8f, 0.8f, 0.2f});
+		pyramidVertices.at(13) = FCVertex({ 0.5f, -0.5f,-0.5f}, { 0.f, 0.2f, 1.0f});
+		pyramidVertices.at(14) = FCVertex({-0.5f, -0.5f,-0.5f}, { 0.f, 0.2f, 1.0f});
+		pyramidVertices.at(15) = FCVertex({ 0.0f,  0.5f, 0.0f}, { 0.f, 0.2f, 1.0f});
 
-				-0.5f, -0.5f, -0.5f,  0.2f, 0.8f, 0.2f,  //triangle Green
-				-0.5f, -0.5f,  0.5f,  0.2f, 0.8f, 0.2f,
-				 0.0f,  0.5f,  0.0f,  0.2f, 0.8f, 0.2f,
+		//float pyramidVertices[6 * 16] =  {					  
+		//	//	 <------ Pos ------>  <--- colour ---> 
+		//		-0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f, //  square Magneta
+		//		 0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f,
+		//		 0.5f, -0.5f,  0.5f,  0.8f, 0.2f, 0.8f,
+		//		-0.5f, -0.5f,  0.5f,  0.8f, 0.2f, 0.8f,
 
-				-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.f, //triangle Red
-				 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.f,
-				 0.0f,  0.5f,  0.0f,  1.0f, 0.0f, 0.f,
+		//		-0.5f, -0.5f, -0.5f,  0.2f, 0.8f, 0.2f,  //triangle Green
+		//		-0.5f, -0.5f,  0.5f,  0.2f, 0.8f, 0.2f,
+		//		 0.0f,  0.5f,  0.0f,  0.2f, 0.8f, 0.2f,
 
-				 0.5f, -0.5f,  0.5f,  0.8f, 0.8f, 0.2f, //  triangle Yellow
-				 0.5f, -0.5f, -0.5f,  0.8f, 0.8f, 0.2f,
-				 0.0f,  0.5f,  0.0f,  0.8f, 0.8f, 0.2f,
+		//		-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.f, //triangle Red
+		//		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.f,
+		//		 0.0f,  0.5f,  0.0f,  1.0f, 0.0f, 0.f,
 
-				 0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,//  triangle Blue
-				-0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,
-				 0.0f,  0.5f,  0.0f,  0.f, 0.2f, 1.0f
-		};
+		//		 0.5f, -0.5f,  0.5f,  0.8f, 0.8f, 0.2f, //  triangle Yellow
+		//		 0.5f, -0.5f, -0.5f,  0.8f, 0.8f, 0.2f,
+		//		 0.0f,  0.5f,  0.0f,  0.8f, 0.8f, 0.2f,
+
+		//		 0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,//  triangle Blue
+		//		-0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,
+		//		 0.0f,  0.5f,  0.0f,  0.f, 0.2f, 1.0f
+		//};
 
 		uint32_t pyramidIndices[3 * 6] =
 		{
@@ -355,8 +394,7 @@ namespace Engine {
 
 		pyramidVAO.reset(VertexArray::create());
 
-		BufferLayout pyramidBL = { ShaderDataType::Float3, ShaderDataType::Float3 };
-		pyramidVBO.reset(VertexBuffer::create(pyramidVertices, sizeof(pyramidVertices), pyramidBL));
+		pyramidVBO.reset(VertexBuffer::create(pyramidVertices.data(), sizeof(FCVertex) * pyramidVertices.size(), FCVertex::getLayout()));
 
 		pyramidIBO.reset(IndexBuffer::create(pyramidIndices, 18));
 
