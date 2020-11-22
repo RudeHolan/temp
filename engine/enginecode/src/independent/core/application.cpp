@@ -222,8 +222,8 @@ namespace Engine {
 		//
 
 		float cubeVertices[8 * 24] = {
-			//	 <------ Pos ------>  <--- normal --->  <-------------------------- UV -------------------------->
-				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
+			     //	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
+			     0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),    letterCube.transformV(0.f),
 				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
 				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
 				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
