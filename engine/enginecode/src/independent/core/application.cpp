@@ -30,13 +30,34 @@ namespace Engine {
 		static BufferLayout s_layout;
 	public:
 		glm::vec3 m_pos;
-		glm::vec3 m_colour;
-		FCVertex() : m_pos(glm::vec3(0.f)), m_colour(glm::vec3(0.f)) {}
-		FCVertex(const glm::vec3 pos, const glm::vec3& colour) : m_pos(pos), m_colour(colour) {}
+		uint32_t m_colour;
+		FCVertex() : m_pos(glm::vec3(0.f)), m_colour(0.f) {}
+		FCVertex(const glm::vec3 pos, const uint32_t& colour) : m_pos(pos), m_colour(colour) {}
 		static BufferLayout getLayout() { return s_layout; }
 	};
 
-	BufferLayout FCVertex::s_layout = { ShaderDataType::Float3, ShaderDataType::Float3 };
+	class TPVertexNormalised
+	{
+	private:
+		static BufferLayout s_layout;
+	public:
+		glm::vec3 m_pos;
+		std::array<int16_t, 3> m_normal;
+		std::array<int16_t, 2> m_uv;
+
+		TPVertexNormalised() : m_pos(glm::vec3(0.f)), m_normal({ 0,0,0 }), m_uv({ 0, 0 }) {}
+		TPVertexNormalised(const glm::vec3& pos, const std::array<int16_t, 3>& normal, const std::array<int16_t, 2>&uv) :
+			m_pos(pos),
+			m_normal(normal),
+			m_uv(uv) 
+		{}
+		static BufferLayout getLayout() { return s_layout; }
+
+	};
+	
+	BufferLayout FCVertex::s_layout = { ShaderDataType::Float3, {ShaderDataType::Byte4, true} };
+	BufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
+
 #pragma endregion
 
 	// Set static vars
@@ -214,6 +235,53 @@ namespace Engine {
 	}
 
 
+	std::array<int16_t, 3> normalise(const glm::vec3& normal)
+	{
+		std::array<int16_t, 3> result;
+		if (normal.x == 1.0f) result.at(0) = INT16_MAX;
+		else if (normal.x == -1.0f) result.at(0) = INT16_MIN;
+		else result.at(0) = static_cast<int16_t>(normal.x * static_cast<float>(INT16_MAX));
+
+		if (normal.y == 1.0f) result.at(1) = INT16_MAX;
+		else if (normal.y == -1.0f) result.at(1) = INT16_MIN;
+		else result.at(1) = static_cast<int16_t>(normal.y * static_cast<float>(INT16_MAX));
+
+		if (normal.z == 1.0f) result.at(2) = INT16_MAX;
+		else if (normal.z == -1.0f) result.at(2) = INT16_MIN;
+		else result.at(2) = static_cast<int16_t>(normal.z * static_cast<float>(INT16_MAX));
+
+		return result;
+	}
+
+	std::array<int16_t, 2> normalise(const glm::vec2& uv)
+	{
+		std::array<int16_t, 2> result;
+		if (uv.x == 1.0f) result.at(0) = INT16_MAX;
+		else if (uv.x == -1.0f) result.at(0) = INT16_MIN;
+		else result.at(0) = static_cast<int16_t>(uv.x * static_cast<float>(INT16_MAX));
+
+		if (uv.y == 1.0f) result.at(1) = INT16_MAX;
+		else if (uv.y == -1.0f) result.at(1) = INT16_MIN;
+		else result.at(1) = static_cast<int16_t>(uv.y * static_cast<float>(INT16_MAX));
+
+		return result;
+	}
+
+	uint32_t pack(const glm::vec4& colour)
+	{
+		uint32_t result = 0;
+		uint32_t r = (static_cast<uint32_t>(colour.r * 255.f)) << 0;  // 000R
+		uint32_t g = (static_cast<uint32_t>(colour.g * 255.f)) << 8;  // 00G0
+		uint32_t b = (static_cast<uint32_t>(colour.b * 255.f)) << 16; // 0B00
+		uint32_t a = (static_cast<uint32_t>(colour.a * 255.f)) << 24; // A000
+		result = (r | g | b | a);
+		return result;
+	}
+
+	uint32_t pack(const glm::vec3& colour)
+	{
+		return pack({ colour.x, colour.y, colour.z, 1.0 });
+	}
 
 	void Application::run()
 	{
@@ -232,95 +300,60 @@ namespace Engine {
 
 #pragma endregion
 
+
+
+
 #pragma region RAW_DATA
 
-		
-		//
+	
 		// This is raw data using subtextures (uncomment the subtextures created in the TEXTURES region) 
 		//
-
-		float cubeVertices[8 * 24] = {
-			     //	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
-			     0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),    letterCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
-				-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
-				-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33),  letterCube.transformV(0.f),
-				-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(1.f),   letterCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
-				 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
-				 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(1.0f),
-				-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
-				-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.3f),  letterCube.transformV(0.5f),
-				-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
-				-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f),
-				 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(1.0f),
-				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
-		};
 		
+		std::vector<TPVertexNormalised> cubeVertices(24);
+		cubeVertices.at(0) =  TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.f),}));
+		cubeVertices.at(1) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.5f),}));
+		cubeVertices.at(2) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(3) =  TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.f),}));
+		cubeVertices.at(4) =  TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(5) =  TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(6) =  TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.f),}));
+		cubeVertices.at(7) =  TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.33), letterCube.transformV(0.f),}));
+		cubeVertices.at(8) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(1.f),  letterCube.transformV(0.f),}));
+		cubeVertices.at(9) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.f),}));
+		cubeVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(11) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(0.5f),}));
+		cubeVertices.at(12) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.5f),}));
+		cubeVertices.at(13) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(1.0f),}));
+		cubeVertices.at(14) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(1.0f),}));
+		cubeVertices.at(15) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.3f), letterCube.transformV(0.5f),}));
+		cubeVertices.at(16) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(17) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(18) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(1.0f),}));
+		cubeVertices.at(19) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(1.0f),}));
+		cubeVertices.at(20) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(1.0f),}));
+		cubeVertices.at(21) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(0.5f),}));
+		cubeVertices.at(22) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
+		cubeVertices.at(23) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(1.0f)}));
 
-		//float cubeVertices[8 * 24] = {
-		//	//	 <------ Pos ------>  <--- normal --->  <-------------------------- UV -------------------------->
-		//		 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,   0.f,
-		//		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,   0.5f,
-		//		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f, 0.5f,
-		//		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f, 0.f,
-		//													  
-		//		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33f, 0.5f,
-		//		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f, 0.5f,
-		//		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f, 0.f,
-		//		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33,  0.f,
-		//													
-		//		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  1.f,   0.f,
-		//		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  0.66f, 0.f,
-		//		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  0.66f, 0.5f,
-		//		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  1.0f,  0.5f,
-		//													
-		//		 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.f,   0.5f,
-		//		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.f,   1.0f,
-		//		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.33f, 1.0f,
-		//		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.3f,  0.5f,
-		//													
-		//		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 0.5f,
-		//		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 0.5f,
-		//		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 1.0f,
-		//		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 1.0f,
-		//												
-		//		 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  1.0f,
-		//		 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  0.5f,
-		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
-		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
-		//};
-		
+
+	
 		std::vector<FCVertex> pyramidVertices(16);
-		pyramidVertices.at(0) = FCVertex({-0.5f, -0.5f, -0.5f}, {0.8f, 0.2f, 0.8f});
-		pyramidVertices.at(1) = FCVertex({ 0.5f, -0.5f, -0.5f}, {0.8f, 0.2f, 0.8f});
-		pyramidVertices.at(2) = FCVertex({ 0.5f, -0.5f,  0.5f}, {0.8f, 0.2f, 0.8f});
-		pyramidVertices.at(3) = FCVertex({-0.5f, -0.5f,  0.5f}, {0.8f, 0.2f, 0.8f});
-		
-		pyramidVertices.at(4) = FCVertex({-0.5f, -0.5f, -0.5f}, {0.2f, 0.8f, 0.2f});
-		pyramidVertices.at(5) = FCVertex({-0.5f, -0.5f,  0.5f}, {0.2f, 0.8f, 0.2f});
-		pyramidVertices.at(6) = FCVertex({ 0.0f,  0.5f,  0.0f}, {0.2f, 0.8f, 0.2f});
-		pyramidVertices.at(7) = FCVertex({-0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.f });
-
-		pyramidVertices.at(8) = FCVertex({ 0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.f });
-		pyramidVertices.at(9) = FCVertex({ 0.0f,  0.5f,  0.0f}, {1.0f, 0.0f, 0.f });
-		pyramidVertices.at(10) = FCVertex({ 0.5f, -0.5f, 0.5f}, {0.8f, 0.8f, 0.2f});
-		pyramidVertices.at(11) = FCVertex({ 0.5f, -0.5f,-0.5f}, {0.8f, 0.8f, 0.2f});
-																 
-		pyramidVertices.at(12) = FCVertex({ 0.0f,  0.5f, 0.0f}, {0.8f, 0.8f, 0.2f});
-		pyramidVertices.at(13) = FCVertex({ 0.5f, -0.5f,-0.5f}, { 0.f, 0.2f, 1.0f});
-		pyramidVertices.at(14) = FCVertex({-0.5f, -0.5f,-0.5f}, { 0.f, 0.2f, 1.0f});
-		pyramidVertices.at(15) = FCVertex({ 0.0f,  0.5f, 0.0f}, { 0.f, 0.2f, 1.0f});
+		pyramidVertices.at(0) = FCVertex({-0.5f, -0.5f, -0.5f}, pack({0.8f, 0.2f, 0.8f}));
+		pyramidVertices.at(1) = FCVertex({ 0.5f, -0.5f, -0.5f}, pack({0.8f, 0.2f, 0.8f}));
+		pyramidVertices.at(2) = FCVertex({ 0.5f, -0.5f,  0.5f}, pack({0.8f, 0.2f, 0.8f}));
+		pyramidVertices.at(3) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({0.8f, 0.2f, 0.8f}));
+		pyramidVertices.at(4) = FCVertex({-0.5f, -0.5f, -0.5f}, pack({0.2f, 0.8f, 0.2f}));
+		pyramidVertices.at(5) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({0.2f, 0.8f, 0.2f}));
+		pyramidVertices.at(6) = FCVertex({ 0.0f,  0.5f,  0.0f}, pack({0.2f, 0.8f, 0.2f}));
+		pyramidVertices.at(7) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({1.0f, 0.0f, 0.f }));
+		pyramidVertices.at(8) = FCVertex({ 0.5f, -0.5f,  0.5f}, pack({1.0f, 0.0f, 0.f }));
+		pyramidVertices.at(9) = FCVertex({ 0.0f,  0.5f,  0.0f}, pack({1.0f, 0.0f, 0.f }));
+		pyramidVertices.at(10) = FCVertex({ 0.5f, -0.5f, 0.5f}, pack({0.8f, 0.8f, 0.2f}));
+		pyramidVertices.at(11) = FCVertex({ 0.5f, -0.5f,-0.5f}, pack({0.8f, 0.8f, 0.2f}));										 
+		pyramidVertices.at(12) = FCVertex({ 0.0f,  0.5f, 0.0f}, pack({0.8f, 0.8f, 0.2f}));
+		pyramidVertices.at(13) = FCVertex({ 0.5f, -0.5f,-0.5f}, pack({ 0.f, 0.2f, 1.0f}));
+		pyramidVertices.at(14) = FCVertex({-0.5f, -0.5f,-0.5f}, pack({ 0.f, 0.2f, 1.0f}));
+		pyramidVertices.at(15) = FCVertex({ 0.0f,  0.5f, 0.0f}, pack({ 0.f, 0.2f, 1.0f}));
 
 		//float pyramidVertices[6 * 16] =  {					  
 		//	//	 <------ Pos ------>  <--- colour ---> 
@@ -344,6 +377,62 @@ namespace Engine {
 		//		 0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,//  triangle Blue
 		//		-0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,
 		//		 0.0f,  0.5f,  0.0f,  0.f, 0.2f, 1.0f
+		//};
+			/*float cubeVertices[8 * 24] = {
+				 //	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
+				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
+				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
+				-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+				-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33),  letterCube.transformV(0.f),
+				-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(1.f),   letterCube.transformV(0.f),
+				 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+				 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+				 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(1.0f),
+				-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+				-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.3f),  letterCube.transformV(0.5f),
+				-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+				-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+				-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f),
+				 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(1.0f),
+				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
+		};*/
+
+
+		//float cubeVertices[8 * 24] = {
+		//	//	 <------ Pos ------>  <--- normal --->  <-------------------------- UV -------------------------->
+		//		 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,    0.f,
+		//		 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.f,   0.5f,
+		//		-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f, 0.5f,
+		//		-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  0.33f,  0.f,											  
+		//		-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33f, 0.5f,
+		//		 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f, 0.5f,
+		//		 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.66f,  0.f,
+		//		-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  0.33,   0.f,									
+		//		-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  1.f,    0.f,
+		//		 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  0.66f,  0.f,
+		//		 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  0.66f, 0.5f,
+		//		-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  1.0f,  0.5f,											
+		//		 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.f,   0.5f,
+		//		 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.f,   1.0f,
+		//		-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  0.33f, 1.0f,
+		//		-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  0.3f,  0.5f,												
+		//		-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 0.5f,
+		//		-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 0.5f,
+		//		-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  0.33f, 1.0f,
+		//		-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  0.66f, 1.0f,
+		//		 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  1.0f,
+		//		 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  1.0f,  0.5f,
+		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
+		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
 		//};
 
 		uint32_t pyramidIndices[3 * 6] =
@@ -380,8 +469,7 @@ namespace Engine {
 
 		cubeVAO.reset(VertexArray::create());
 
-		BufferLayout cubeBL = { ShaderDataType::Float3,ShaderDataType::Float3, ShaderDataType::Float2 };
-		cubeVBO.reset(VertexBuffer::create(cubeVertices, sizeof(cubeVertices), cubeBL));
+		cubeVBO.reset(VertexBuffer::create(cubeVertices.data(), sizeof(TPVertexNormalised) * cubeVertices.size(), TPVertexNormalised::getLayout()));
 
 		cubeIBO.reset(IndexBuffer::create(cubeIndices, 36));
 		

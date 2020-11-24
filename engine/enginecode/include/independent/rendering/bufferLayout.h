@@ -3,6 +3,7 @@
 
 #include "shaderDataType.h"
 #include <vector>
+#include <cstdint>
 
 namespace Engine
 {
@@ -44,7 +45,7 @@ namespace Engine
 
 	public:
 		BufferLayout() {}
-		BufferLayout(const std::initializer_list<BufferElement>& element) : m_elements(element) { calcStrideAndOffset(); }
+		BufferLayout(const std::initializer_list<BufferElement>& element, uint32_t stride = 0) : m_elements(element), m_stride(stride) { calcStrideAndOffset(); }
 		inline uint32_t getStride() const { return m_stride; } //!< get the stride (width in bytes of the buffer line)
 		void addElement(BufferElement dataType); //!< add an element to the buffer layout
 		inline std::vector<BufferElement>::iterator begin() { return m_elements.begin(); } //!< the first element of the vector
