@@ -3,10 +3,21 @@
 
 layout(location = 0) in vec3 a_vertexPosition;
 layout(location = 1) in vec3 a_vertexColour;
+
 out vec3 fragmentColour;
+
+//b meaning block
+layout (std140) uniform b_camera
+{
+mat4 u_projection;
+mat4 u_view;
+};
+
+
 uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
+
+
+
 void main()
 {
 	fragmentColour = a_vertexColour;
@@ -19,6 +30,14 @@ void main()
 
 layout(location = 0) out vec4 colour;
 in vec3 fragmentColour;
+
+layout (std140) uniform b_light
+{
+vec3 u_lightColour;
+vec3 u_lightPos;
+vec3 u_viewPos;
+};
+
 void main()
 {
 	colour = vec4(fragmentColour, 1.0);

@@ -501,11 +501,51 @@ namespace Engine {
 
 #pragma endregion 
 
-
-
-
+		//Camera UBO
 		glm::mat4 view = glm::lookAt( glm::vec3(0.f,0.f,0.f), glm::vec3(0.,0.f,-1), glm::vec3(0.,1.f,0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
+
+		uint32_t blockNumber = 0;
+		uint32_t cameraUBO;
+		uint32_t cameraDataSize = sizeof(glm::mat4) * 2;
+
+		glGenBuffers(1, &cameraUBO);
+		glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+		glBufferData(GL_UNIFORM_BUFFER, cameraDataSize, nullptr, GL_DYNAMIC_DRAW);
+		glBindBufferRange(GL_UNIFORM_BUFFER, blockNumber, cameraUBO, 0, cameraDataSize);
+
+		uint32_t blockIndex = glGetUniformBlockIndex(FCShader->getRenderID(), "b_camera");
+		glUniformBlockBinding(FCShader->getRenderID(), blockIndex, blockNumber);
+
+		blockIndex = glGetUniformBlockIndex(TPShader->getRenderID(), "b_camera");
+		glUniformBlockBinding(TPShader->getRenderID(), blockIndex, blockNumber);
+
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+
+		blockNumber++;
+
+		glm::vec3 lightColour(1.f, 1.f, 1.f);
+		glm::vec3 lightPosition(1.f, 4.f, 6.f);
+		glm::vec3 viewPosition(0.f, 0.f, 0.f);
+
+		uint32_t lightsUBO;
+		uint32_t lightDataSize = sizeof(glm::vec4) * 3;
+
+		glGenBuffers(1, &lightsUBO);
+		glBindBuffer(GL_UNIFORM_BUFFER, lightsUBO);
+		glBufferData(GL_UNIFORM_BUFFER, lightDataSize, nullptr, GL_DYNAMIC_DRAW);
+		glBindBufferRange(GL_UNIFORM_BUFFER, blockNumber, lightsUBO, 0, lightDataSize);
+
+		blockIndex = glGetUniformBlockIndex(TPShader->getRenderID(), "b_light");
+		glUniformBlockBinding(TPShader->getRenderID(), blockIndex, blockNumber);
+
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(lightColour));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(lightPosition));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));
+
+
+
 		glm::mat4 models[3];
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));
@@ -537,17 +577,10 @@ namespace Engine {
 				glBindVertexArray(pyramidVAO->getRenderID());
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getRenderID());
 
-				uniformLocation = glGetUniformLocation(FCShader->getRenderID(), "u_projection");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(projection));
-
-				uniformLocation = glGetUniformLocation(FCShader->getRenderID(), "u_view");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(view));
-
 				uniformLocation = glGetUniformLocation(FCShader->getRenderID(), "u_model");
 				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(models[0]));
 
 				glDrawElements(GL_TRIANGLES, pyramidVAO->getDrawCount() , GL_UNSIGNED_INT, nullptr);
-
 
 				//Cube with letters texture
 				glUseProgram(TPShader->getRenderID());
@@ -556,21 +589,6 @@ namespace Engine {
 
 				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_model");
 				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(models[1]));
-
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_view");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(view));
-
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_projection");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(projection));
-
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_lightColour");
-				glUniform3f(uniformLocation, 1.f, 1.f, 1.f);
-
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_lightPos");
-				glUniform3f(uniformLocation, 1.f, 4.f, 6.f);
-
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_viewPos");
-				glUniform3f(uniformLocation, 0.f, 0.f, 0.f);
 
 				glBindTexture(GL_TEXTURE_2D, letterAndNumbertexture->getRenderID());
 				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_texData");
