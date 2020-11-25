@@ -15,7 +15,7 @@ namespace Engine
 		
 		virtual ~Texture() = default; //!< Virtual destructor
 		virtual void edit(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height, unsigned char* data) = 0; //!< Edit the texture
-		virtual inline uint32_t getRenderID() = 0; //!< Get the render ID
+		virtual inline uint32_t getID() = 0; //!< Get the render ID
 		virtual inline uint32_t getWidth() = 0; //!< Get the width in int format
 		virtual inline uint32_t getHeight() = 0; //!< Get the height in int format
 		virtual inline uint32_t getWidthf() = 0; //!< Get the width in float format

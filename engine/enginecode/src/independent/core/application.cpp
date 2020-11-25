@@ -21,6 +21,7 @@
 #include "rendering/shader.h"
 #include "rendering/texture.h"
 #include "rendering/uniformBuffer.h"
+#include "rendering/textureUnitManager.h"
 
 namespace Engine {
 
@@ -308,35 +309,31 @@ namespace Engine {
 
 #pragma region RAW_DATA
 
-	
-		// This is raw data using subtextures (uncomment the subtextures created in the TEXTURES region) 
-		//
-		
 		std::vector<TPVertexNormalised> cubeVertices(24);
-		cubeVertices.at(0) =  TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.f),}));
-		cubeVertices.at(1) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.5f),}));
-		cubeVertices.at(2) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(3) =  TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.f),}));
-		cubeVertices.at(4) =  TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(5) =  TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(6) =  TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.f),}));
-		cubeVertices.at(7) =  TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}), normalise({letterCube.transformU(0.33), letterCube.transformV(0.f),}));
-		cubeVertices.at(8) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(1.f),  letterCube.transformV(0.f),}));
-		cubeVertices.at(9) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.f),}));
-		cubeVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(11) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(0.5f),}));
-		cubeVertices.at(12) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(0.5f),}));
-		cubeVertices.at(13) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.f),  letterCube.transformV(1.0f),}));
-		cubeVertices.at(14) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(1.0f),}));
-		cubeVertices.at(15) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}), normalise({letterCube.transformU(0.3f), letterCube.transformV(0.5f),}));
-		cubeVertices.at(16) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(17) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(18) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.33f),letterCube.transformV(1.0f),}));
-		cubeVertices.at(19) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(1.0f),}));
-		cubeVertices.at(20) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(1.0f),}));
-		cubeVertices.at(21) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(1.0f), letterCube.transformV(0.5f),}));
-		cubeVertices.at(22) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(0.5f),}));
-		cubeVertices.at(23) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}), normalise({letterCube.transformU(0.66f),letterCube.transformV(1.0f)}));
+		cubeVertices.at(0) =  TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.00f,    0.f}));
+		cubeVertices.at(1) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.00f,   0.5f}));
+		cubeVertices.at(2) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.33f, 0.5f}));
+		cubeVertices.at(3) =  TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.33f,  0.f}));
+		cubeVertices.at(4) =  TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.33f, 0.5f}));
+		cubeVertices.at(5) =  TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.66f, 0.5f}));
+		cubeVertices.at(6) =  TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.66f,  0.f}));
+		cubeVertices.at(7) =  TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.33f,   0.f}));
+		cubeVertices.at(8) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({1.00f,    0.f}));
+		cubeVertices.at(9) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({0.66f,  0.f}));
+		cubeVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({0.66f, 0.5f}));
+		cubeVertices.at(11) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({1.00f,  0.5f}));
+		cubeVertices.at(12) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.00f,   0.5f}));
+		cubeVertices.at(13) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.00f,   1.0f}));
+		cubeVertices.at(14) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.33f, 1.0f}));
+		cubeVertices.at(15) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.30f,  0.5f}));
+		cubeVertices.at(16) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.66f, 0.5f}));
+		cubeVertices.at(17) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.33f, 0.5f}));
+		cubeVertices.at(18) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.33f, 1.0f}));
+		cubeVertices.at(19) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.66f, 1.0f}));
+		cubeVertices.at(20) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({1.00f,  1.0f}));
+		cubeVertices.at(21) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({1.00f,  0.5f}));
+		cubeVertices.at(22) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({0.66f, 0.5f}));
+		cubeVertices.at(23) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({0.66f, 1.0f}));
 
 
 	
@@ -358,6 +355,7 @@ namespace Engine {
 		pyramidVertices.at(14) = FCVertex({-0.5f, -0.5f,-0.5f}, pack({ 0.f, 0.2f, 1.0f}));
 		pyramidVertices.at(15) = FCVertex({ 0.0f,  0.5f, 0.0f}, pack({ 0.f, 0.2f, 1.0f}));
 
+		/*
 		//float pyramidVertices[6 * 16] =  {					  
 		//	//	 <------ Pos ------>  <--- colour ---> 
 		//		-0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f, //  square Magneta
@@ -381,7 +379,9 @@ namespace Engine {
 		//		-0.5f, -0.5f, -0.5f,  0.f, 0.2f, 1.0f,
 		//		 0.0f,  0.5f,  0.0f,  0.f, 0.2f, 1.0f
 		//};
-			/*float cubeVertices[8 * 24] = {
+
+
+			     float cubeVertices[8 * 24] = {
 				 //	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
 				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
 				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
@@ -407,7 +407,7 @@ namespace Engine {
 				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
 				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
 				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
-		};*/
+		};
 
 
 		//float cubeVertices[8 * 24] = {
@@ -437,6 +437,7 @@ namespace Engine {
 		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
 		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
 		//};
+		*/
 
 		uint32_t pyramidIndices[3 * 6] =
 		{
@@ -504,8 +505,9 @@ namespace Engine {
 
 #pragma endregion 
 
+		/*
 		//old camera ubo
-		/*uint32_t cameraUBO;
+		uint32_t cameraUBO;
 
 		UniformBufferLayout camLayout = { {"u_projection", ShaderDataType::Mat4}, {"u_view", ShaderDataType::Mat4} };
 
@@ -525,10 +527,10 @@ namespace Engine {
 		glBufferSubData(GL_UNIFORM_BUFFER, element.m_offset, element.m_size, glm::value_ptr(projection));
 
 		element = *(camLayout.begin()+1);
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));*/
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 
 		//old light ubo
-		/*glm::vec3 lightColour(1.f, 1.f, 1.f);
+		glm::vec3 lightColour(1.f, 1.f, 1.f);
 		glm::vec3 lightPosition(1.f, 4.f, 6.f);
 		glm::vec3 viewPosition(0.f, 0.f, 0.f);
 
@@ -545,8 +547,8 @@ namespace Engine {
 
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(lightColour));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(lightPosition));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));*/
-
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));
+		*/
 		uint32_t blockNumber = 0;
 
 		//Camera UBO
@@ -595,15 +597,14 @@ namespace Engine {
 
 		float timestep = 0.f;
 
+		TextureUnitManager unitManager(32);
+		uint32_t unit;
+
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
 				m_timer->reset();	
-
-				//if (InputPoller::isKeyPressed(65)) Log::error("A is pressed");
-				//if (InputPoller::isMouseButtonPressed(0)) Log::error("Left mouse button is pressed");
-
-
+				
 				//Do frame stuff
 				for (auto& model : models) { model = glm::rotate(model, timestep, glm::vec3(0.f, 1.0, 0.f)); }
 
@@ -616,30 +617,38 @@ namespace Engine {
 				glBindVertexArray(pyramidVAO->getRenderID());
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getRenderID());
 
-				uniformLocation = glGetUniformLocation(FCShader->getRenderID(), "u_model");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(models[0]));
+				FCShader->uploadMat4("u_model", models[0]);
 
 				glDrawElements(GL_TRIANGLES, pyramidVAO->getDrawCount() , GL_UNSIGNED_INT, nullptr);
 
 				//Cube with letters texture
-				glUseProgram(TPShader->getRenderID());
+				glUseProgram(TPShader->getRenderID());	
 				glBindVertexArray(cubeVAO->getRenderID());
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIBO->getRenderID());
 
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_model");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(models[1]));
+				TPShader->uploadMat4("u_model", models[1]);
 
-				glBindTexture(GL_TEXTURE_2D, letterAndNumbertexture->getRenderID());
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_texData");
-				glUniform1i(uniformLocation, 0);
+				if (unitManager.getUnit(letterTexture->getID(), unit))
+				{
+					glActiveTexture(GL_TEXTURE0 + unit);
+					glBindTexture(GL_TEXTURE_2D, letterTexture->getID());
+				}
+				
+				TPShader->uploadInt("u_texData", unit);
 
 				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 
 				//Cube with numbers texture
-				uniformLocation = glGetUniformLocation(TPShader->getRenderID(), "u_model");
-				glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(models[2]));
+				TPShader->uploadMat4("u_model", models[2]);
 
-				//glBindTexture(GL_TEXTURE_2D, numberTexture->getRenderID());
+
+				if (unitManager.getUnit(numberTexture->getID(), unit))
+				{
+					glActiveTexture(GL_TEXTURE0 + unit);
+					glBindTexture(GL_TEXTURE_2D, numberTexture->getID());
+				}
+
+				TPShader->uploadInt("u_texData", unit);
 
 				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 				

@@ -22,7 +22,7 @@ namespace Engine
 		OpenGLTexture(uint32_t width, uint32_t height, uint32_t channels, unsigned char* data); //!< Second constructor 
 		~OpenGLTexture();  //!< Destructor
 		void edit(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height, unsigned char* data); //!< Edit the texture
-		inline uint32_t getRenderID() { return m_OpenGL_ID; } //!< Get the render ID
+		inline uint32_t getID() { return m_OpenGL_ID; } //!< Get the render ID
 		inline uint32_t getWidth() { return m_width; } //!< Get the width in int format
 		inline uint32_t getHeight() { return m_height; } //!< Get the height in int format
 		inline uint32_t getWidthf() { return static_cast<float>(m_width); } //!< Get the width in int format
