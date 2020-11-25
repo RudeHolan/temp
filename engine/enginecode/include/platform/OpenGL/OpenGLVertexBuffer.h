@@ -14,13 +14,13 @@ namespace Engine
 	{
 	private:
 		uint32_t m_OpenGL_ID; //!< Render ID
-		BufferLayout m_layout; //!< The buffer layout
+		VertexBufferLayout m_layout; //!< The buffer layout
 
 	public:
-		OpenGLVertexBuffer(void* vertices, uint32_t size, BufferLayout bufferLayout); //!< Constructor
+		OpenGLVertexBuffer(void* vertices, uint32_t size, VertexBufferLayout bufferLayout); //!< Constructor
 		virtual ~OpenGLVertexBuffer(); //!< Virtual distructor
 		virtual void edit(void* vertices, uint32_t size, uint32_t offset) override; //!< Edit the vertex buffer
 		virtual inline uint32_t getRenderID() const override { return m_OpenGL_ID; } //!< Get the render ID
-		virtual const BufferLayout& getLayout() const override { return m_layout; } //!< Get the layout
+		virtual const VertexBufferLayout& getLayout() const override { return m_layout; } //!< Get the layout
 	};
 }

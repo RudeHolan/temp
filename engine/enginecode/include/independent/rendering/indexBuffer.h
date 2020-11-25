@@ -11,7 +11,7 @@ namespace Engine {
 	*/
 	class IndexBuffer {
 	public:
-		virtual ~IndexBuffer() = default; //!< Destroy the index buffer
+		virtual ~IndexBuffer() = default; //!< Virtual destructor
 		virtual inline uint32_t getRenderID() const = 0; //!< Get the render ID
 		virtual inline uint32_t getCount() const = 0; //!< Get the effective draw count
 

@@ -17,7 +17,8 @@ namespace Engine
 		Float2,
 		Float3,
 		Float4,
-		
+		Mat3,
+		Mat4
 	};
 
 	namespace SDT
@@ -37,6 +38,10 @@ namespace Engine
 			case ShaderDataType::Float2: return 4 * 2; //size of the float is 8 bytes
 			case ShaderDataType::Float3: return 4 * 3;
 			case ShaderDataType::Float4: return 4 * 4; 
+
+			case ShaderDataType::Mat3: return 4 * 3 * 3;
+			case ShaderDataType::Mat4: return 4 * 4 * 4;
+
 			default: return 0;
 			}
 		}
@@ -56,9 +61,40 @@ namespace Engine
 			case ShaderDataType::Float2: return 2; //it has 2 floats
 			case ShaderDataType::Float3: return 3;
 			case ShaderDataType::Float4: return 4;
+
+			case ShaderDataType::Mat3: return 3 * 3;
+			case ShaderDataType::Mat4: return 4 * 4;
+
 			default: return 0;
 			}
 		}
+
+		static uint32_t std140alignment(ShaderDataType type)
+		{
+			switch (type)
+			{
+			case ShaderDataType::Byte4:  return 1 * 4;
+
+			case ShaderDataType::Short:  return 2;     
+			case ShaderDataType::Short2: return 2 * 2; 
+			case ShaderDataType::Short3: return 2 * 4; // look at the std140 alignment and the advanced GLSL tab in learnopengl.com
+			case ShaderDataType::Short4: return 2 * 4; 
+
+			case ShaderDataType::Float:  return 4;     
+			case ShaderDataType::Float2: return 4 * 2; 
+			case ShaderDataType::Float3: return 4 * 4;
+			case ShaderDataType::Float4: return 4 * 4;
+
+			case ShaderDataType::Mat3: return 4 * 3 * 3;
+			case ShaderDataType::Mat4: return 4 * 4 * 4;
+
+			default: return 0;
+			}
+		}
+
+
+
+
 	}
 
 }

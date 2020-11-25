@@ -20,26 +20,29 @@
 #include "rendering/subTexture.h"
 #include "rendering/shader.h"
 #include "rendering/texture.h"
+#include "rendering/uniformBuffer.h"
 
 namespace Engine {
 
+
+	
 #pragma region TEMP_CLASS
 	class FCVertex
 	{
 	private:
-		static BufferLayout s_layout;
+		static VertexBufferLayout s_layout;
 	public:
 		glm::vec3 m_pos;
 		uint32_t m_colour;
 		FCVertex() : m_pos(glm::vec3(0.f)), m_colour(0.f) {}
 		FCVertex(const glm::vec3 pos, const uint32_t& colour) : m_pos(pos), m_colour(colour) {}
-		static BufferLayout getLayout() { return s_layout; }
+		static VertexBufferLayout getLayout() { return s_layout; }
 	};
 
 	class TPVertexNormalised
 	{
 	private:
-		static BufferLayout s_layout;
+		static VertexBufferLayout s_layout;
 	public:
 		glm::vec3 m_pos;
 		std::array<int16_t, 3> m_normal;
@@ -51,12 +54,12 @@ namespace Engine {
 			m_normal(normal),
 			m_uv(uv) 
 		{}
-		static BufferLayout getLayout() { return s_layout; }
+		static VertexBufferLayout getLayout() { return s_layout; }
 
 	};
 	
-	BufferLayout FCVertex::s_layout = { ShaderDataType::Float3, {ShaderDataType::Byte4, true} };
-	BufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
+	VertexBufferLayout FCVertex::s_layout = { ShaderDataType::Float3, {ShaderDataType::Byte4, true} };
+	VertexBufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
 
 #pragma endregion
 
@@ -501,18 +504,15 @@ namespace Engine {
 
 #pragma endregion 
 
-		//Camera UBO
-		glm::mat4 view = glm::lookAt( glm::vec3(0.f,0.f,0.f), glm::vec3(0.,0.f,-1), glm::vec3(0.,1.f,0.f));
-		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
+		//old camera ubo
+		/*uint32_t cameraUBO;
 
-		uint32_t blockNumber = 0;
-		uint32_t cameraUBO;
-		uint32_t cameraDataSize = sizeof(glm::mat4) * 2;
+		UniformBufferLayout camLayout = { {"u_projection", ShaderDataType::Mat4}, {"u_view", ShaderDataType::Mat4} };
 
 		glGenBuffers(1, &cameraUBO);
 		glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
-		glBufferData(GL_UNIFORM_BUFFER, cameraDataSize, nullptr, GL_DYNAMIC_DRAW);
-		glBindBufferRange(GL_UNIFORM_BUFFER, blockNumber, cameraUBO, 0, cameraDataSize);
+		glBufferData(GL_UNIFORM_BUFFER, camLayout.getStride(), nullptr, GL_DYNAMIC_DRAW);
+		glBindBufferRange(GL_UNIFORM_BUFFER, blockNumber, cameraUBO, 0, camLayout.getStride());
 
 		uint32_t blockIndex = glGetUniformBlockIndex(FCShader->getRenderID(), "b_camera");
 		glUniformBlockBinding(FCShader->getRenderID(), blockIndex, blockNumber);
@@ -520,12 +520,15 @@ namespace Engine {
 		blockIndex = glGetUniformBlockIndex(TPShader->getRenderID(), "b_camera");
 		glUniformBlockBinding(TPShader->getRenderID(), blockIndex, blockNumber);
 
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 
-		blockNumber++;
+		auto element = *camLayout.begin();
+		glBufferSubData(GL_UNIFORM_BUFFER, element.m_offset, element.m_size, glm::value_ptr(projection));
 
-		glm::vec3 lightColour(1.f, 1.f, 1.f);
+		element = *(camLayout.begin()+1);
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));*/
+
+		//old light ubo
+		/*glm::vec3 lightColour(1.f, 1.f, 1.f);
 		glm::vec3 lightPosition(1.f, 4.f, 6.f);
 		glm::vec3 viewPosition(0.f, 0.f, 0.f);
 
@@ -537,15 +540,51 @@ namespace Engine {
 		glBufferData(GL_UNIFORM_BUFFER, lightDataSize, nullptr, GL_DYNAMIC_DRAW);
 		glBindBufferRange(GL_UNIFORM_BUFFER, blockNumber, lightsUBO, 0, lightDataSize);
 
-		blockIndex = glGetUniformBlockIndex(TPShader->getRenderID(), "b_light");
+		uint32_t blockIndex = glGetUniformBlockIndex(TPShader->getRenderID(), "b_light");
 		glUniformBlockBinding(TPShader->getRenderID(), blockIndex, blockNumber);
 
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(lightColour));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(lightPosition));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));*/
 
+		uint32_t blockNumber = 0;
 
+		//Camera UBO
+		UniformBufferLayout camLayout = { {"u_projection", ShaderDataType::Mat4}, {"u_view", ShaderDataType::Mat4} };
 
+		std::shared_ptr<UniformBuffer> cameraUBO;
+		cameraUBO.reset(UniformBuffer::create(camLayout));
+
+		cameraUBO->attackShaderBlock(FCShader, "b_camera");
+		cameraUBO->attackShaderBlock(TPShader, "b_camera");
+
+		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
+		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
+
+		cameraUBO->uploadData("u_projection", glm::value_ptr(projection));
+		cameraUBO->uploadData("u_view", glm::value_ptr(view));
+
+		blockNumber++; //finish camera ubo block
+
+		// Light UBO
+		UniformBufferLayout lightLayout = { {"u_lightColour", ShaderDataType::Float3}, {"u_lightPos", ShaderDataType::Float3}, {"u_viewPos", ShaderDataType::Float3} };
+		
+		std::shared_ptr<UniformBuffer> lightUBO;
+		lightUBO.reset(UniformBuffer::create(lightLayout));
+
+		lightUBO->attackShaderBlock(TPShader, "b_light");
+
+		glm::vec3 lightColour(1.f, 1.f, 1.f);
+		glm::vec3 lightPosition(1.f, 4.f, 6.f);
+		glm::vec3 viewPosition(0.f, 0.f, 0.f);
+
+		lightUBO->uploadData("u_lightColour", glm::value_ptr(lightColour));
+		lightUBO->uploadData("u_lightPos", glm::value_ptr(lightPosition));
+		lightUBO->uploadData("u_viewPos", glm::value_ptr(viewPosition));
+
+		blockNumber++;
+
+		
 		glm::mat4 models[3];
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));

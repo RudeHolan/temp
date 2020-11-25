@@ -16,7 +16,7 @@ namespace Engine {
     class VertexArray
     {
     public:
-        virtual ~VertexArray() = default; //!< Destroy the vertex array
+        virtual ~VertexArray() = default; //!< Virtual distructor
         virtual void addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0; //!< Add a vertex buffer 
         virtual void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0; //!< Add an index buffer
         virtual inline uint32_t getRenderID() const = 0; //!< Get the render ID
