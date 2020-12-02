@@ -9,7 +9,7 @@
 namespace Engine
 {	
 	/**
-	\class WindowsEvent - The base windows event class
+	\class WindowEvent - The base windows event class
 	*/
 	class WindowEvent : public Event 
 	{
@@ -71,7 +71,7 @@ namespace Engine
 
 
 	/**
-	\class WindowsLostFocusEvent - The windows lost focus event class
+	\class WindowLostFocusEvent - The windows lost focus event class
 	*/
 	class WindowLostFocusEvent : public WindowEvent
 	{
@@ -87,7 +87,7 @@ namespace Engine
 
 
 	/**
-	\class WindowsMoveEvent - The windows move event class
+	\class WindowMoveEvent - The windows move event class
 	*/
 	class WindowMoveEvent : public WindowEvent
 	{

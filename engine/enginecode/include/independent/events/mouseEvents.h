@@ -18,7 +18,7 @@ namespace Engine
 
 
 	/**
-	\class MouseButtonPressedEvent - The mouse button press event class
+	\class MouseButtonPressEvent - The mouse button press event class
 	*/
 	class MouseButtonPressEvent : public MouseEvent
 	{
@@ -38,7 +38,7 @@ namespace Engine
 
 
 	/**
-    \class MouseButtonReleasedEvent - The mouse button release event class
+    \class MouseButtonReleaseEvent - The mouse button release event class
     */
 	class MouseButtonReleaseEvent : public MouseEvent
 	{
@@ -57,7 +57,7 @@ namespace Engine
 
 
 	/**
-    \class MouseMovedEvent - The mouse move event class
+    \class MouseMoveEvent - The mouse move event class
     */
 	class MouseMoveEvent : public MouseEvent
 	{
@@ -82,7 +82,7 @@ namespace Engine
 
 
 	/**
-    \class MouseScrolledEvent - The mouse scroll event class
+    \class MouseScrollEvent - The mouse scroll event class
     */
 	class MouseScrollEvent : public MouseEvent
 	{

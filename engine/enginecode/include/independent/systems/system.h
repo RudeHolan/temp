@@ -6,7 +6,7 @@
 #include <cstdarg>
 
 /**
-\class Interface class for all systems
+\class System - Interface class for all systems
 */
 
 namespace Engine {
@@ -16,7 +16,7 @@ namespace Engine {
 	class System
 	{
 	public:
-		virtual ~System() {};
+		virtual ~System() {}; //!< Virtual destructor
 		virtual void start(SystemSignal init = SystemSignal::None, ...) = 0; //!< Start the system
 		virtual void stop(SystemSignal close = SystemSignal::None, ...) = 0; //!< Stop the system
 	};

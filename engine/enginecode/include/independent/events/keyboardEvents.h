@@ -15,11 +15,15 @@ namespace Engine
 
 	protected:
 		int32_t m_keyCode;
-		KeyEvent(int32_t keycode) : 
+
+	public:
+
+
+		KeyEvent(int32_t keycode) :
 			m_keyCode(keycode)
 		{} //!< Default constructor
 
-	public:
+
 		inline int32_t getKeyCode() const { return m_keyCode; } //!< Get the key code
 		virtual inline int32_t getCategoryFlags() const override { return EventCategoryKeyboard | EventCategoryInput; } //!< Get the event category flag
 
@@ -27,7 +31,7 @@ namespace Engine
 
 
 	/**
-	\class KeyPressedEvent - The key press event
+	\class KeyPressEvent - The key press event
 	*/
 	class KeyPressEvent : public KeyEvent
 	{
@@ -50,7 +54,7 @@ namespace Engine
 
 
 	/**
-    \class KeyReleasedEvent - The key release event
+    \class KeyReleaseEvent - The key release event
     */
 	class KeyReleaseEvent : public KeyEvent
 	{
@@ -67,7 +71,7 @@ namespace Engine
 
 
 	/**
-    \class KeyTypedEvent - The key type event
+    \class KeyTypeEvent - The key type event
     */
 	class KeyTypeEvent : public KeyEvent
 	{

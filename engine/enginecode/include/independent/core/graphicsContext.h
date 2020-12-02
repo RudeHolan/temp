@@ -2,7 +2,7 @@
 
 #pragma once
 
-namespace
+namespace Engine
 {
 	class GraphicsContext
 	{
