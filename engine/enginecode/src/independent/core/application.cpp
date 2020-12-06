@@ -579,10 +579,12 @@ namespace Engine {
 		glm::vec3 lightColour(1.f, 1.f, 1.f);
 		glm::vec3 lightPosition(1.f, 4.f, 6.f);
 		glm::vec3 viewPosition(0.f, 0.f, 0.f);
+		glm::vec4 tint(0.f, 0.f, 1.f, 0.f);
 
 		lightUBO->uploadData("u_lightColour", glm::value_ptr(lightColour));
 		lightUBO->uploadData("u_lightPos", glm::value_ptr(lightPosition));
 		lightUBO->uploadData("u_viewPos", glm::value_ptr(viewPosition));
+		//lightUBO->uploadData("u_tint", glm::value_ptr(tint));
 
 		blockNumber++;
 
@@ -649,6 +651,7 @@ namespace Engine {
 				}
 
 				TPShader->uploadInt("u_texData", unit);
+				TPShader->uploadFloat4("u_tint", tint);
 
 				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 				

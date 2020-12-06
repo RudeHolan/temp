@@ -42,6 +42,8 @@ vec3 u_lightPos;
 vec3 u_viewPos;
 };
 
+uniform vec4 u_tint;
+
 uniform sampler2D u_texData;
 void main()
 {
@@ -57,5 +59,5 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
 	vec3 specular = specularStrength * spec * u_lightColour;  
 	
-	colour = vec4((ambient + diffuse + specular), 1.0) * texture(u_texData, texCoord);
+	colour = vec4((ambient + diffuse + specular), 1.0) * texture(u_texData, texCoord) * u_tint;
 }
