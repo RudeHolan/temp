@@ -82,9 +82,43 @@ namespace Engine {
 
 	void Renderer2D::submit(const Quad& quad, glm::vec4& tint)
 	{
-		glBindTexture(GL_TEXTURE_2D, s_data->defaultTexture->getID());
+		Renderer2D::submit(quad, tint, s_data->defaultTexture);
+	}
+
+	void Renderer2D::submit(const Quad& quad, const std::shared_ptr<Texture>& texture)
+	{
+		Renderer2D::submit(quad, s_data->defaultTint, texture);
+	}
+
+	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, const std::shared_ptr<Texture>& texture)
+	{
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
 		s_data->model = glm::scale(glm::translate(glm::mat4(1.f), quad.m_translate), quad.m_scale);
-	
+
+		s_data->shader->uploadInt("u_texData", 0);
+		s_data->shader->uploadFloat4("u_tint", tint);
+		s_data->shader->uploadMat4("u_model", s_data->model);
+
+		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, float angle, bool degrees)
+	{
+		Renderer2D::submit(quad, tint, s_data->defaultTexture, angle, degrees);
+	}
+
+	void Renderer2D::submit(const Quad& quad, const std::shared_ptr<Texture>& texture, float angle, bool degrees)
+	{
+		Renderer2D::submit(quad, s_data->defaultTint, texture, angle, degrees);
+	}
+
+	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, const std::shared_ptr<Texture>& texture, float angle, bool degrees)
+	{
+		if (degrees) angle - glm::radians(angle);
+
+		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		s_data->model = glm::scale(glm::rotate(glm::translate(glm::mat4(1.f), quad.m_translate), angle, { 0.f, 0.f, 1.f }), quad.m_scale);
+
 		s_data->shader->uploadInt("u_texData", 0);
 		s_data->shader->uploadFloat4("u_tint", tint);
 		s_data->shader->uploadMat4("u_model", s_data->model);
