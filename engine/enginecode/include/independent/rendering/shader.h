@@ -14,7 +14,7 @@ namespace Engine {
 	public:
 
 		virtual ~Shader() = default; //<! Destructor
-		virtual uint32_t getRenderID() const = 0; //!< Get the render ID
+		virtual uint32_t getID() const = 0; //!< Get the render ID
 		virtual void uploadInt(const char* name, int value) = 0; //!< Upload an int to the shader 
 		virtual void uploadFloat(const char* name, float value) = 0; //!< Upload a float to the shader
 		virtual void uploadFloat2(const char* name, const glm::vec2& value) = 0;//!< Upload a float2 to the shader

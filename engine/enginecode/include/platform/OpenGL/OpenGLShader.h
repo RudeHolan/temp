@@ -19,7 +19,7 @@ namespace Engine{
 		OpenGLShader(const char* vertexFilepath, const char* fragmentFilepath); //!< Constructor
 		OpenGLShader(const char* filepath); //!< Second constructor
 		~OpenGLShader(); //!< Destructor
-		uint32_t getRenderID() const override { return m_OpenGL_ID; } //!< Get the render ID
+		uint32_t getID() const override { return m_OpenGL_ID; } //!< Get the render ID
 
 		void uploadInt(const char* name, int value) override; //!< Upload an int to the shader
 		void uploadFloat(const char* name, float value) override; //!< Upload an float to the shader

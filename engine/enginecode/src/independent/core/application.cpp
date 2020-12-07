@@ -594,12 +594,6 @@ namespace Engine {
 		
 #pragma endregion
 
-		//glm::vec3 lightColour(1.f, 1.f, 1.f);
-		//glm::vec3 lightPosition(1.f, 4.f, 6.f);
-		//glm::vec3 viewPosition(0.f, 0.f, 0.f);
-
-
-
 
 		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
@@ -617,10 +611,6 @@ namespace Engine {
 		swu3D["u_lightPos"] = std::pair<ShaderDataType, void*>(ShaderDataType::Float3, static_cast<void*>(glm::value_ptr(lightData[1])));
 		swu3D["u_viewPos"] = std::pair<ShaderDataType, void*>(ShaderDataType::Float3, static_cast<void*>(glm::value_ptr(lightData[2])));
 
-
-
-
-		glEnable(GL_DEPTH_TEST);
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 		float timestep = 0.f;
@@ -629,7 +619,8 @@ namespace Engine {
 		TextureUnitManager unitManager(32);
 		uint32_t unit;
 
-		Renderer3D::init();
+		//Renderer3D::init();
+
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
@@ -640,11 +631,14 @@ namespace Engine {
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+				/*glEnable(GL_DEPTH_TEST);
 				Renderer3D::begin(swu3D);
 				Renderer3D::submit(pyramidVAO, pyramidMat, models[0]);
 				Renderer3D::submit(cubeVAO, letterCubeMat, models[1]);
 				Renderer3D::submit(cubeVAO, numberCubeMat, models[2]);
-				Renderer3D::end();
+				Renderer3D::end();*/
+
+				glDisable(GL_DEPTH_TEST);
 
 				//Update
 				m_window->onUpdate(timestep);

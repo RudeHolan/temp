@@ -34,8 +34,8 @@ namespace Engine {
 
 	void OpenGLUniformBuffer::attachShaderBlock(const std::shared_ptr<Shader>& shader, const char* blockName)
 	{
-		uint32_t blockIndex = glGetUniformBlockIndex(shader->getRenderID(), blockName);
-		glUniformBlockBinding(shader->getRenderID(), blockIndex, m_blockNumber);
+		uint32_t blockIndex = glGetUniformBlockIndex(shader->getID(), blockName);
+		glUniformBlockBinding(shader->getID(), blockIndex, m_blockNumber);
 	}
 
 	void OpenGLUniformBuffer::uploadData(const char* uniformName, void* data)

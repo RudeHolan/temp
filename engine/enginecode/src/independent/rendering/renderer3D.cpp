@@ -24,7 +24,7 @@ namespace Engine
 	void Renderer3D::submit(const std::shared_ptr<VertexArray>& geometry, const std::shared_ptr<Material>& material, const glm::mat4& model)
 	{
 		// Bind shader
-		glUseProgram(material->getShader()->getRenderID());
+		glUseProgram(material->getShader()->getID());
 
 		// Apply sceneWideUniforms
 		for (auto& dataPair : s_data->sceneWideUniforms)
