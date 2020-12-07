@@ -32,7 +32,7 @@ namespace Engine {
 		//s_blockNumber--;
 	}
 
-	void OpenGLUniformBuffer::attackShaderBlock(const std::shared_ptr<Shader>& shader, const char* blockName)
+	void OpenGLUniformBuffer::attachShaderBlock(const std::shared_ptr<Shader>& shader, const char* blockName)
 	{
 		uint32_t blockIndex = glGetUniformBlockIndex(shader->getRenderID(), blockName);
 		glUniformBlockBinding(shader->getRenderID(), blockIndex, m_blockNumber);

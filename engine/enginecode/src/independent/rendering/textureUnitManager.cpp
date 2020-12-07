@@ -35,8 +35,8 @@ namespace Engine{
 		textureUnit = m_head;
 
 		// Checking if over capacity
-		m_head = (++m_head) % m_capacity;
-		if (m_head == m_tail) m_full = true;
+		//m_head = (++m_head) % m_capacity;
+		//if (m_head == m_tail) m_full = true;
 
 		return true;
 	}

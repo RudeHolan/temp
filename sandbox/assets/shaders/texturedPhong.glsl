@@ -42,6 +42,7 @@ vec3 u_lightPos;
 vec3 u_viewPos;
 };
 
+
 uniform vec4 u_tint;
 
 uniform sampler2D u_texData;

@@ -25,21 +25,8 @@
 
 namespace Engine {
 
-
-	
 #pragma region TEMP_CLASS
-	class FCVertex
-	{
-	private:
-		static VertexBufferLayout s_layout;
-	public:
-		glm::vec3 m_pos;
-		uint32_t m_colour;
-		FCVertex() : m_pos(glm::vec3(0.f)), m_colour(0.f) {}
-		FCVertex(const glm::vec3 pos, const uint32_t& colour) : m_pos(pos), m_colour(colour) {}
-		static VertexBufferLayout getLayout() { return s_layout; }
-	};
-
+	
 	class TPVertexNormalised
 	{
 	private:
@@ -59,7 +46,6 @@ namespace Engine {
 
 	};
 	
-	VertexBufferLayout FCVertex::s_layout = { ShaderDataType::Float3, {ShaderDataType::Byte4, true} };
 	VertexBufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
 
 #pragma endregion
@@ -118,7 +104,7 @@ namespace Engine {
 	}
 
 
-
+#pragma region EVENTS
 	bool Application::onClose(WindowCloseEvent& e)
 	{
 		e.handle(true);
@@ -226,7 +212,7 @@ namespace Engine {
 		//Log::info("Mouse position info - X possition: {0}; Y possition:{1}", posX, posY); 
 		return e.isHandled();
 	}
-
+#pragma endregion
 
 	Application::~Application()
 	{
@@ -238,7 +224,7 @@ namespace Engine {
 		m_windowsSystem->stop();
 	}
 
-
+#pragma region Normalise&Pack
 	std::array<int16_t, 3> normalise(const glm::vec3& normal)
 	{
 		std::array<int16_t, 3> result;
@@ -286,16 +272,20 @@ namespace Engine {
 	{
 		return pack({ colour.x, colour.y, colour.z, 1.0 });
 	}
+#pragma endregion
 
 	void Application::run()
 	{
 
 #pragma region TEXTURES
 
-		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture;
+		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture, plainWhiteTexture;
 		letterTexture.reset(Texture::create("assets/textures/letterCube.png"));
 		numberTexture.reset(Texture::create("assets/textures/numberCube.png"));
 		letterAndNumbertexture.reset(Texture::create("assets/textures/letterAndNumberCube.png"));
+
+		unsigned char whitepixel[4] = { 255 ,255, 255, 255 };
+		plainWhiteTexture.reset(Texture::create(1, 1, 4, whitepixel));
 
 		
 		SubTexture letterCube(letterAndNumbertexture, { 0.f,0.f }, { 1.0f,0.5f });
@@ -337,23 +327,27 @@ namespace Engine {
 
 
 	
-		std::vector<FCVertex> pyramidVertices(16);
-		pyramidVertices.at(0) = FCVertex({-0.5f, -0.5f, -0.5f}, pack({0.8f, 0.2f, 0.8f}));
-		pyramidVertices.at(1) = FCVertex({ 0.5f, -0.5f, -0.5f}, pack({0.8f, 0.2f, 0.8f}));
-		pyramidVertices.at(2) = FCVertex({ 0.5f, -0.5f,  0.5f}, pack({0.8f, 0.2f, 0.8f}));
-		pyramidVertices.at(3) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({0.8f, 0.2f, 0.8f}));
-		pyramidVertices.at(4) = FCVertex({-0.5f, -0.5f, -0.5f}, pack({0.2f, 0.8f, 0.2f}));
-		pyramidVertices.at(5) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({0.2f, 0.8f, 0.2f}));
-		pyramidVertices.at(6) = FCVertex({ 0.0f,  0.5f,  0.0f}, pack({0.2f, 0.8f, 0.2f}));
-		pyramidVertices.at(7) = FCVertex({-0.5f, -0.5f,  0.5f}, pack({1.0f, 0.0f, 0.f }));
-		pyramidVertices.at(8) = FCVertex({ 0.5f, -0.5f,  0.5f}, pack({1.0f, 0.0f, 0.f }));
-		pyramidVertices.at(9) = FCVertex({ 0.0f,  0.5f,  0.0f}, pack({1.0f, 0.0f, 0.f }));
-		pyramidVertices.at(10) = FCVertex({ 0.5f, -0.5f, 0.5f}, pack({0.8f, 0.8f, 0.2f}));
-		pyramidVertices.at(11) = FCVertex({ 0.5f, -0.5f,-0.5f}, pack({0.8f, 0.8f, 0.2f}));										 
-		pyramidVertices.at(12) = FCVertex({ 0.0f,  0.5f, 0.0f}, pack({0.8f, 0.8f, 0.2f}));
-		pyramidVertices.at(13) = FCVertex({ 0.5f, -0.5f,-0.5f}, pack({ 0.f, 0.2f, 1.0f}));
-		pyramidVertices.at(14) = FCVertex({-0.5f, -0.5f,-0.5f}, pack({ 0.f, 0.2f, 1.0f}));
-		pyramidVertices.at(15) = FCVertex({ 0.0f,  0.5f, 0.0f}, pack({ 0.f, 0.2f, 1.0f}));
+		std::vector<TPVertexNormalised> pyramidVertices(16);
+		pyramidVertices.at(0) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.f, 0.0f}));
+		pyramidVertices.at(1) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.f, 0.5f}));
+		pyramidVertices.at(2) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.33f, 0.5f}));
+		pyramidVertices.at(3) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.33f, 0.0f}));
+
+		pyramidVertices.at(4) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({0.33f, 1.0f}));
+		pyramidVertices.at(5) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({0.66f, 1.0f}));
+		pyramidVertices.at(6) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({(0.33f + 0.66f) *0.5f, 0.5f}));
+
+		pyramidVertices.at(7) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
+		pyramidVertices.at(8) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
+		pyramidVertices.at(9) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
+
+		pyramidVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f, 0.5f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));
+		pyramidVertices.at(11) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));										 
+		pyramidVertices.at(12) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));
+
+		pyramidVertices.at(13) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
+		pyramidVertices.at(14) = TPVertexNormalised({-0.5f, -0.5f,-0.5f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
+		pyramidVertices.at(15) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
 
 		/*
 		//float pyramidVertices[6 * 16] =  {					  
@@ -486,7 +480,7 @@ namespace Engine {
 
 		pyramidVAO.reset(VertexArray::create());
 
-		pyramidVBO.reset(VertexBuffer::create(pyramidVertices.data(), sizeof(FCVertex) * pyramidVertices.size(), FCVertex::getLayout()));
+		pyramidVBO.reset(VertexBuffer::create(pyramidVertices.data(), sizeof(TPVertexNormalised) * pyramidVertices.size(), TPVertexNormalised::getLayout()));
 
 		pyramidIBO.reset(IndexBuffer::create(pyramidIndices, 18));
 
@@ -505,6 +499,8 @@ namespace Engine {
 
 #pragma endregion 
 
+
+#pragma region UBOs
 		/*
 		//old camera ubo
 		uint32_t cameraUBO;
@@ -552,13 +548,10 @@ namespace Engine {
 		uint32_t blockNumber = 0;
 
 		//Camera UBO
-		UniformBufferLayout camLayout = { {"u_projection", ShaderDataType::Mat4}, {"u_view", ShaderDataType::Mat4} };
-
 		std::shared_ptr<UniformBuffer> cameraUBO;
+		UniformBufferLayout camLayout = { {"u_projection", ShaderDataType::Mat4}, {"u_view", ShaderDataType::Mat4} };
 		cameraUBO.reset(UniformBuffer::create(camLayout));
-
-		cameraUBO->attackShaderBlock(FCShader, "b_camera");
-		cameraUBO->attackShaderBlock(TPShader, "b_camera");
+		cameraUBO->attachShaderBlock(TPShader, "b_camera");
 
 		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
@@ -566,27 +559,26 @@ namespace Engine {
 		cameraUBO->uploadData("u_projection", glm::value_ptr(projection));
 		cameraUBO->uploadData("u_view", glm::value_ptr(view));
 
-		blockNumber++; //finish camera ubo block
+		blockNumber++; //finish camera ubo block and move on to the next block
 
 		// Light UBO
-		UniformBufferLayout lightLayout = { {"u_lightColour", ShaderDataType::Float3}, {"u_lightPos", ShaderDataType::Float3}, {"u_viewPos", ShaderDataType::Float3} };
-		
 		std::shared_ptr<UniformBuffer> lightUBO;
+		UniformBufferLayout lightLayout = { {"u_lightColour", ShaderDataType::Float3}, {"u_lightPos", ShaderDataType::Float3}, {"u_viewPos", ShaderDataType::Float3} };
 		lightUBO.reset(UniformBuffer::create(lightLayout));
-
-		lightUBO->attackShaderBlock(TPShader, "b_light");
+		lightUBO->attachShaderBlock(TPShader, "b_light");
 
 		glm::vec3 lightColour(1.f, 1.f, 1.f);
 		glm::vec3 lightPosition(1.f, 4.f, 6.f);
 		glm::vec3 viewPosition(0.f, 0.f, 0.f);
-		glm::vec4 tint(0.f, 0.f, 1.f, 0.f);
+		glm::vec4 tint(1.f, 1.f, 1.f, 1.f);
 
 		lightUBO->uploadData("u_lightColour", glm::value_ptr(lightColour));
 		lightUBO->uploadData("u_lightPos", glm::value_ptr(lightPosition));
 		lightUBO->uploadData("u_viewPos", glm::value_ptr(viewPosition));
-		//lightUBO->uploadData("u_tint", glm::value_ptr(tint));
+
 
 		blockNumber++;
+#pragma endregion 
 
 		
 		glm::mat4 models[3];
@@ -612,49 +604,45 @@ namespace Engine {
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				GLuint uniformLocation;
-
 				//Pyramid
-				glUseProgram(FCShader->getRenderID());
+				glUseProgram(TPShader->getRenderID());
+				glBindTexture(GL_TEXTURE_2D, plainWhiteTexture->getID());
 				glBindVertexArray(pyramidVAO->getRenderID());
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getRenderID());
 
-				FCShader->uploadMat4("u_model", models[0]);
+				TPShader->uploadMat4("u_model", models[0]);
+				glm::vec4 tint(0.3f, 0.7f, 0.2f, 1.f);
+				TPShader->uploadFloat4("u_tint", tint);
 
 				glDrawElements(GL_TRIANGLES, pyramidVAO->getDrawCount() , GL_UNSIGNED_INT, nullptr);
 
 				//Cube with letters texture
-				glUseProgram(TPShader->getRenderID());	
 				glBindVertexArray(cubeVAO->getRenderID());
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIBO->getRenderID());
-
+				
 				TPShader->uploadMat4("u_model", models[1]);
-
+				tint = glm::vec4(1.f, 1.f, 1.f, 1.f);
+				TPShader->uploadFloat4("u_tint", tint);
 				if (unitManager.getUnit(letterTexture->getID(), unit))
 				{
 					glActiveTexture(GL_TEXTURE0 + unit);
 					glBindTexture(GL_TEXTURE_2D, letterTexture->getID());
 				}
-				
 				TPShader->uploadInt("u_texData", unit);
 
 				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 
 				//Cube with numbers texture
 				TPShader->uploadMat4("u_model", models[2]);
-
-
 				if (unitManager.getUnit(numberTexture->getID(), unit))
 				{
 					glActiveTexture(GL_TEXTURE0 + unit);
 					glBindTexture(GL_TEXTURE_2D, numberTexture->getID());
 				}
-
 				TPShader->uploadInt("u_texData", unit);
-				TPShader->uploadFloat4("u_tint", tint);
-
 				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 				
+				//Update
 				m_window->onUpdate(timestep);
 				
 		};
