@@ -22,6 +22,7 @@
 #include "rendering/texture.h"
 #include "rendering/uniformBuffer.h"
 #include "rendering/textureUnitManager.h"
+#include "rendering/renderer3D.h"
 
 namespace Engine {
 
@@ -214,15 +215,7 @@ namespace Engine {
 	}
 #pragma endregion
 
-	Application::~Application()
-	{
-
-		// Stop logging system
-		m_logSystem->stop();
-
-		// Stop window system
-		m_windowsSystem->stop();
-	}
+	
 
 #pragma region Normalise&Pack
 	std::array<int16_t, 3> normalise(const glm::vec3& normal)
@@ -274,6 +267,16 @@ namespace Engine {
 	}
 #pragma endregion
 
+	Application::~Application()
+	{
+
+		// Stop logging system
+		m_logSystem->stop();
+
+		// Stop window system
+		m_windowsSystem->stop();
+	}
+
 	void Application::run()
 	{
 
@@ -293,7 +296,6 @@ namespace Engine {
 		
 
 #pragma endregion
-
 
 
 
@@ -499,7 +501,6 @@ namespace Engine {
 
 #pragma endregion 
 
-
 #pragma region UBOs
 		/*
 		//old camera ubo
@@ -545,6 +546,8 @@ namespace Engine {
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(lightPosition));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));
 		*/
+		
+		/*
 		uint32_t blockNumber = 0;
 
 		//Camera UBO
@@ -578,22 +581,55 @@ namespace Engine {
 
 
 		blockNumber++;
+		*/
 #pragma endregion 
 
+#pragma region MATERIALS
+		std::shared_ptr<Material> pyramidMat, letterCubeMat, numberCubeMat;
+		glm::vec4 tint(0.f, 1.f, 1.f, 1.f);
+
+		pyramidMat.reset(new Material(TPShader, { 0.4f, 0.7f, 0.3f, 1.f }));
+		letterCubeMat.reset(new Material(TPShader, letterTexture));
+		numberCubeMat.reset(new Material(TPShader, numberTexture, tint));
 		
+#pragma endregion
+
+		//glm::vec3 lightColour(1.f, 1.f, 1.f);
+		//glm::vec3 lightPosition(1.f, 4.f, 6.f);
+		//glm::vec3 viewPosition(0.f, 0.f, 0.f);
+
+
+
+
+		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
+		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
+		glm::vec3 lightData[3] = { {1.0f, 1.0f, 1.0f} , {-2.0f, 4.0f, 6.0f} , {0.0f, 0.0f, 0.0f} };
 		glm::mat4 models[3];
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));
 		models[2] = glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.f, -6.f));
 		
+		SceneWideUniforms swu3D;
+
+		swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(view)));
+		swu3D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(projection)));
+		swu3D["u_lightColour"] = std::pair<ShaderDataType, void*>(ShaderDataType::Float3, static_cast<void*>(glm::value_ptr(lightData[0])));
+		swu3D["u_lightPos"] = std::pair<ShaderDataType, void*>(ShaderDataType::Float3, static_cast<void*>(glm::value_ptr(lightData[1])));
+		swu3D["u_viewPos"] = std::pair<ShaderDataType, void*>(ShaderDataType::Float3, static_cast<void*>(glm::value_ptr(lightData[2])));
+
+
+
+
 		glEnable(GL_DEPTH_TEST);
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 		float timestep = 0.f;
 
+		//Unit manager stuff
 		TextureUnitManager unitManager(32);
 		uint32_t unit;
 
+		Renderer3D::init();
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
@@ -604,44 +640,12 @@ namespace Engine {
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				//Pyramid
-				glUseProgram(TPShader->getRenderID());
-				glBindTexture(GL_TEXTURE_2D, plainWhiteTexture->getID());
-				glBindVertexArray(pyramidVAO->getID());
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getID());
+				Renderer3D::begin(swu3D);
+				Renderer3D::submit(pyramidVAO, pyramidMat, models[0]);
+				Renderer3D::submit(cubeVAO, letterCubeMat, models[1]);
+				Renderer3D::submit(cubeVAO, numberCubeMat, models[2]);
+				Renderer3D::end();
 
-				TPShader->uploadMat4("u_model", models[0]);
-				glm::vec4 tint(0.3f, 0.7f, 0.2f, 1.f);
-				TPShader->uploadFloat4("u_tint", tint);
-
-				glDrawElements(GL_TRIANGLES, pyramidVAO->getDrawCount() , GL_UNSIGNED_INT, nullptr);
-
-				//Cube with letters texture
-				glBindVertexArray(cubeVAO->getID());
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIBO->getID());
-				
-				TPShader->uploadMat4("u_model", models[1]);
-				tint = glm::vec4(1.f, 1.f, 1.f, 1.f);
-				TPShader->uploadFloat4("u_tint", tint);
-				if (unitManager.getUnit(letterTexture->getID(), unit))
-				{
-					glActiveTexture(GL_TEXTURE0 + unit);
-					glBindTexture(GL_TEXTURE_2D, letterTexture->getID());
-				}
-				TPShader->uploadInt("u_texData", unit);
-
-				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
-
-				//Cube with numbers texture
-				TPShader->uploadMat4("u_model", models[2]);
-				if (unitManager.getUnit(numberTexture->getID(), unit))
-				{
-					glActiveTexture(GL_TEXTURE0 + unit);
-					glBindTexture(GL_TEXTURE_2D, numberTexture->getID());
-				}
-				TPShader->uploadInt("u_texData", unit);
-				glDrawElements(GL_TRIANGLES, cubeVAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
-				
 				//Update
 				m_window->onUpdate(timestep);
 				

@@ -9,13 +9,14 @@ out vec3 fragmentPos;
 out vec3 normal;
 out vec2 texCoord;
 
-layout (std140) uniform b_camera
-{
-mat4 u_projection;
-mat4 u_view;
-};
+//layout (std140) uniform b_camera
+//{
+//mat4 u_projection;
+//mat4 u_view;
+//};
 
-
+uniform mat4 u_projection;
+uniform mat4 u_view;
 uniform mat4 u_model;
 
 void main()
@@ -35,13 +36,16 @@ in vec3 normal;
 in vec3 fragmentPos;
 in vec2 texCoord;
 
-layout (std140) uniform b_light
-{
-vec3 u_lightColour;
-vec3 u_lightPos;
-vec3 u_viewPos;
-};
+//layout (std140) uniform b_light
+//{
+//vec3 u_lightColour;
+//vec3 u_lightPos;
+//vec3 u_viewPos;
+//};
 
+uniform vec3 u_lightColour;
+uniform vec3 u_lightPos;
+uniform vec3 u_viewPos;
 
 uniform vec4 u_tint;
 
