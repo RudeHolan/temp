@@ -17,6 +17,7 @@ namespace Engine
 		Float2,
 		Float3,
 		Float4,
+		Int,
 		Mat3,
 		Mat4
 	};
@@ -38,6 +39,8 @@ namespace Engine
 			case ShaderDataType::Float2: return 4 * 2; //size of the float is 8 bytes
 			case ShaderDataType::Float3: return 4 * 3;
 			case ShaderDataType::Float4: return 4 * 4; 
+
+			case ShaderDataType::Int: return 4;
 
 			case ShaderDataType::Mat3: return 4 * 3 * 3;
 			case ShaderDataType::Mat4: return 4 * 4 * 4;
@@ -61,6 +64,8 @@ namespace Engine
 			case ShaderDataType::Float2: return 2; //it has 2 floats
 			case ShaderDataType::Float3: return 3;
 			case ShaderDataType::Float4: return 4;
+
+			case ShaderDataType::Int: return 1;  
 
 			case ShaderDataType::Mat3: return 3 * 3;
 			case ShaderDataType::Mat4: return 4 * 4;

@@ -26,10 +26,11 @@ namespace Engine
 
 		OpenGLVertexArray(); //!< Constructor
 		virtual ~OpenGLVertexArray(); //!< virtual destructor
-		void addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer); //!< Add a vertex buffer
-		void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer); //!< Add an index buffer
-		inline uint32_t getRenderID() const { return m_OpenGL_ID; } //!< Get the render ID
-		inline uint32_t getDrawCount() { if (m_indexBuffer) { return m_indexBuffer->getCount(); } else { return 0; } }; //!< Get the draw count of the ibo
+		void addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override; //!< Add a vertex buffer
+		void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override; //!< Add an index buffer
+		IndexBuffer& getIndexBuffer() const override { return *m_indexBuffer; }
+		inline uint32_t getID() const override { return m_OpenGL_ID; } //!< Get the render ID
+		inline uint32_t getDrawCount() const override { if (m_indexBuffer) { return m_indexBuffer->getCount(); } else { return 0; } }; //!< Get the draw count of the ibo
 
 	};
 }

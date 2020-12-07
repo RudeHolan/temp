@@ -23,6 +23,11 @@ namespace Engine
 			case ShaderDataType::Float3: return GL_FLOAT;
 			case ShaderDataType::Float4: return GL_FLOAT;
 
+			case ShaderDataType::Int: return GL_INT;
+
+			case ShaderDataType::Mat3: return GL_FLOAT;
+			case ShaderDataType::Mat4: return GL_FLOAT;
+
 			default: return GL_INVALID_ENUM;
 			}
 		}

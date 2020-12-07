@@ -19,8 +19,9 @@ namespace Engine {
         virtual ~VertexArray() = default; //!< Virtual distructor
         virtual void addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0; //!< Add a vertex buffer 
         virtual void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0; //!< Add an index buffer
-        virtual inline uint32_t getRenderID() const = 0; //!< Get the render ID
-        virtual inline uint32_t getDrawCount() = 0; //!< Get the draw count
+        virtual IndexBuffer& getIndexBuffer() const = 0; //!< Get the index buffer
+        virtual inline uint32_t getID() const = 0; //!< Get the render ID
+        virtual inline uint32_t getDrawCount() const = 0; //!< Get the draw count
 
         static VertexArray* create(); //!< Create a vertex array
 

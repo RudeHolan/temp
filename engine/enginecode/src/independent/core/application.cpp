@@ -607,8 +607,8 @@ namespace Engine {
 				//Pyramid
 				glUseProgram(TPShader->getRenderID());
 				glBindTexture(GL_TEXTURE_2D, plainWhiteTexture->getID());
-				glBindVertexArray(pyramidVAO->getRenderID());
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getRenderID());
+				glBindVertexArray(pyramidVAO->getID());
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pyramidIBO->getID());
 
 				TPShader->uploadMat4("u_model", models[0]);
 				glm::vec4 tint(0.3f, 0.7f, 0.2f, 1.f);
@@ -617,8 +617,8 @@ namespace Engine {
 				glDrawElements(GL_TRIANGLES, pyramidVAO->getDrawCount() , GL_UNSIGNED_INT, nullptr);
 
 				//Cube with letters texture
-				glBindVertexArray(cubeVAO->getRenderID());
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIBO->getRenderID());
+				glBindVertexArray(cubeVAO->getID());
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIBO->getID());
 				
 				TPShader->uploadMat4("u_model", models[1]);
 				tint = glm::vec4(1.f, 1.f, 1.f, 1.f);
