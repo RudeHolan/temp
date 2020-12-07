@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include "rendering/renderer2D.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace Engine {
 	
 	std::shared_ptr<Renderer2D::InternalData> Renderer2D::s_data = nullptr;
@@ -20,7 +22,7 @@ namespace Engine {
 
 		s_data->model = glm::mat4(1.0f);
 
-		s_data->shader.reset(Shader::create("na maika vi putkata gospodine, tam se namira faila"));
+		s_data->shader.reset(Shader::create("./assets/shaders/quad1.glsl"));
 	
 		float vertices[4 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f,
@@ -80,10 +82,31 @@ namespace Engine {
 
 	void Renderer2D::submit(const Quad& quad, glm::vec4& tint)
 	{
+		glBindTexture(GL_TEXTURE_2D, s_data->defaultTexture->getID());
+		s_data->model = glm::scale(glm::translate(glm::mat4(1.f), quad.m_translate), quad.m_scale);
+	
+		s_data->shader->uploadInt("u_texData", 0);
+		s_data->shader->uploadFloat4("u_tint", tint);
+		s_data->shader->uploadMat4("u_model", s_data->model);
+
+		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
 	void Renderer2D::end()
 	{
 	}
 
+
+
+	Quad Quad::createCentreHalfExtents(const glm::vec2& centre, const glm::vec2& halfExtents)
+	{
+		Quad result;
+
+		result.m_translate = glm::vec3(centre, 0.f);
+		result.m_scale = glm::vec3(halfExtents * 2.f, 1.f);
+
+		return result;
+	}
+
 }
+

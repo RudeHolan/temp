@@ -47,6 +47,9 @@ namespace Engine
 
 	void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
+		//It does work without a push_back
+		//m_vertexBuffer.push_back(vertexBuffer);
+
 		glBindVertexArray(m_OpenGL_ID);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->getRenderID());
 

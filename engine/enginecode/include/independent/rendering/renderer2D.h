@@ -6,7 +6,17 @@
 
 namespace Engine
 {
-	class Quad;
+	class Quad
+	{
+	private:
+		glm::vec3 m_translate = glm::vec3(0.f); //!< Translation vector
+		glm::vec3 m_scale = glm::vec3(1.f); //!< Scale vector
+		friend class Renderer2D; 
+
+	public:
+		Quad() = default;
+		static Quad createCentreHalfExtents(const glm::vec2& centre, const glm::vec2& halfExtents);
+	};
 
 	class Renderer2D
 	{
