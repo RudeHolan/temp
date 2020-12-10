@@ -168,6 +168,23 @@ namespace Engine
 		}
 	}
 
+	std::function<void(void)> RenderCommandFactory::useProgramCommand(uint32_t shaderID)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [shaderID]() {glUseProgram(shaderID); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
 
 
 

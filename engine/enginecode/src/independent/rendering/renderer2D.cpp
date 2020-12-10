@@ -75,8 +75,15 @@ namespace Engine {
 
 	void Renderer2D::begin(const SceneWideUniforms& swu)
 	{
+#pragma region RenderCommands
+		
+			std::shared_ptr<RenderCommand> useProgramCommand;
+			useProgramCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::useProgram, s_data->shader->getID()));
+			
+#pragma endregion
 		//Bind the shader
-		glUseProgram(s_data->shader->getID());
+		RendererCommon::actionCommand(useProgramCommand);
+		//glUseProgram(s_data->shader->getID());
 
 		// Apply sceneWideUniforms
 		for (auto& dataPair : swu)

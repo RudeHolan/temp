@@ -24,7 +24,7 @@ namespace Engine
 			disableDepthTest, disableBlend,
 			
 			// commands with args
-			setClearColour
+			setClearColour, useProgram
 		};
 	
 	};
@@ -64,6 +64,8 @@ namespace Engine
 
 
 		static std::function<void(void)> getSetClearColourCommand(float r, float g, float b, float a);
+		static std::function<void(void)> useProgramCommand(uint32_t shaderID);
+
 
 	public:
 		template<typename ...Args> static RenderCommand * createCommand(RenderCommand::Commands command, Args&& ...args)
@@ -115,17 +117,33 @@ namespace Engine
 				//
 				//
 			case RenderCommand::Commands::setClearColour :
+			{
 				float r, g, b, a;
 
 				auto argTuple = std::make_tuple(args...);
 
 				getValue<float, 0>(r, argTuple);
-				getValue<float, 1>(r, argTuple);
-				getValue<float, 2>(r, argTuple);
-				getValue<float, 3>(r, argTuple);
+				getValue<float, 1>(g, argTuple);
+				getValue<float, 2>(b, argTuple);
+				getValue<float, 3>(a, argTuple);
 				result->m_action = getSetClearColourCommand(r, g, b, a);
+			}
 				return result;
 
+
+			case RenderCommand::Commands::useProgram:
+			{
+				uint32_t shaderID;
+
+				auto argTuple = std::make_tuple(args...);
+
+				getValue<uint32_t, 0>(shaderID, argTuple);
+				result->m_action = useProgramCommand(shaderID);
+			}
+				return result;
+
+
+				
 
 			}
 		}

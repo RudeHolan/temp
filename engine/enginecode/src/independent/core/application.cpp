@@ -62,11 +62,9 @@ namespace Engine {
 			s_instance = this;
 		}
 
-
 		// Start logging system
 		m_logSystem.reset(new Log);
 		m_logSystem->start();
-
 
 		// Start windows System
 #ifdef NG_PLATFORM_WINDOWS
@@ -74,17 +72,15 @@ namespace Engine {
 #endif
 		m_windowsSystem->start();
 
-
 		// Start timer (not a system)
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
-
 
 		// Create a window
 		WindowProperties props("My Game Engine", 1024, 800, false);
 		m_window.reset(Window::create(props));
 
-
+		//Event handler stuff
 		m_window->getEventHandler().setOnWindowCloseCallback(std::bind(&Application::onClose, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnWindowResizeCallback(std::bind(&Application::onResize, this, std::placeholders::_1));
 		m_window->getEventHandler().setOnWindowMoveCallback(std::bind(&Application::onWindowMove, this, std::placeholders::_1));
@@ -216,8 +212,6 @@ namespace Engine {
 	}
 #pragma endregion
 
-	
-
 #pragma region Normalise&Pack
 	std::array<int16_t, 3> normalise(const glm::vec3& normal)
 	{
@@ -282,8 +276,7 @@ namespace Engine {
 	{
 
 	
-
-
+/////Textures for the cubes and the pyramid
 #pragma region TEXTURES
 
 		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture, plainWhiteTexture;
@@ -301,6 +294,8 @@ namespace Engine {
 
 #pragma endregion
 
+
+/////3D verts and 2D quads
 #pragma region RAW_DATA
 
 		std::vector<TPVertexNormalised> cubeVertices(24);
@@ -461,8 +456,20 @@ namespace Engine {
 			20, 21, 22,
 			22, 23, 20
 		};
+
+		Quad quads[6] =
+		{
+			Quad::createCentreHalfExtents({ 400.f, 200.f }, { 100.f, 50.f }),
+			Quad::createCentreHalfExtents({ 200.f, 200.f }, { 50.f, 100.f }),
+			Quad::createCentreHalfExtents({ 400.f, 500.f }, { 100.f, 75.f }),
+			Quad::createCentreHalfExtents({ 100.f, 200.f }, { 50.f, 50.f }),
+			Quad::createCentreHalfExtents({ 500.f, 100.f }, { 50.f, 25.f }),
+			Quad::createCentreHalfExtents({ 300.f, 50.f }, { 75.f, 15.f })
+		};
 #pragma endregion 
 
+
+/////VAO, VBO, IBO
 #pragma region GL_BUFFERS	
 
 		std::shared_ptr<VertexArray> cubeVAO;
@@ -493,6 +500,8 @@ namespace Engine {
 		
 #pragma endregion
 
+
+////Flat Colour and Phong
 #pragma region SHADERS
 
 		std::shared_ptr<Shader> FCShader;
@@ -503,6 +512,8 @@ namespace Engine {
 
 #pragma endregion 
 
+
+////This is currently not used
 #pragma region UBOs
 		/*
 		//old camera ubo
@@ -586,6 +597,8 @@ namespace Engine {
 		*/
 #pragma endregion 
 
+
+////Materials for the cubes and the pyramid
 #pragma region MATERIALS
 		std::shared_ptr<Material> pyramidMat, letterCubeMat, numberCubeMat;
 		glm::vec4 tint(0.f, 1.f, 1.f, 1.f);
@@ -596,6 +609,8 @@ namespace Engine {
 		
 #pragma endregion
 
+
+////This is the reason why there is no OpenGL code in this file
 #pragma region RENDER_COMMANDS
 
 		
@@ -631,6 +646,9 @@ namespace Engine {
 
 #pragma endregion
 
+
+////The Scene Wide Uniforms
+#pragma region 3D&2D_Stuff
 		//3D stuff
 		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
@@ -639,7 +657,7 @@ namespace Engine {
 		models[0] = glm::translate(glm::mat4(1.0f), glm::vec3(-2.f, 0.f, -6.f));
 		models[1] = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -6.f));
 		models[2] = glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.f, -6.f));
-		
+
 		SceneWideUniforms swu3D;
 
 		swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(view)));
@@ -657,24 +675,22 @@ namespace Engine {
 		swu2D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(view2D)));
 		swu2D["u_projection"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, static_cast<void*>(glm::value_ptr(projection2D)));
 
-		Quad quads[6] =
-		{
-			Quad::createCentreHalfExtents({ 400.f, 200.f }, { 100.f, 50.f }),
-			Quad::createCentreHalfExtents({ 200.f, 200.f }, { 50.f, 100.f }),
-			Quad::createCentreHalfExtents({ 400.f, 500.f }, { 100.f, 75.f }),
-			Quad::createCentreHalfExtents({ 100.f, 200.f }, { 50.f, 50.f }),
-			Quad::createCentreHalfExtents({ 500.f, 100.f }, { 50.f, 25.f }),
-			Quad::createCentreHalfExtents({ 300.f, 50.f }, { 75.f, 15.f })
-		};
-
-		
+#pragma endregion
 
 		float timestep = 0.f;
 
+		//Currently not in use
+		//
+		//
+		//
 		//Unit manager stuff
 		//TextureUnitManager unitManager(32);
 		//uint32_t unit;
 		//glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+		//
+		//
+		//
+		//Currently not in use
 
 		Renderer3D::init();
 		Renderer2D::init();
