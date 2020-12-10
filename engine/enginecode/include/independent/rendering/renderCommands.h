@@ -67,7 +67,9 @@ namespace Engine
 		static std::function<void(void)> bindVertexArray(uint32_t VAOid);
 		static std::function<void(void)> bindBuffer(uint32_t IBOid);
 		static std::function<void(void)> bindTexture(uint32_t textureID);
-		static std::function<void(void)> drawQuads(uint32_t VAODrawCount);
+		static std::function<void(void)> drawQuads(uint32_t DrawCount);
+		static std::function<void(void)> drawTriangles(uint32_t DrawCount);
+
 
 	public:
 		template<typename ...Args> static RenderCommand * createCommand(RenderCommand::Commands command, Args&& ...args)
@@ -181,6 +183,16 @@ namespace Engine
 
 				getValue<uint32_t, 0>(VAODrawCount, argTuple);
 				result->m_action = drawQuads(VAODrawCount);
+			}
+			return result;
+
+			case RenderCommand::Commands::drawTriangles:
+			{
+				uint32_t GeometryDrawCount;
+				auto argTuple = std::make_tuple(args...);
+
+				getValue<uint32_t, 0>(GeometryDrawCount, argTuple);
+				result->m_action = drawTriangles(GeometryDrawCount);
 			}
 			return result;
 				

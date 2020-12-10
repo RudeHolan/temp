@@ -23,8 +23,15 @@ namespace Engine
 
 	void Renderer3D::submit(const std::shared_ptr<VertexArray>& geometry, const std::shared_ptr<Material>& material, const glm::mat4& model)
 	{
+		//Setting the render commands
+		std::shared_ptr<RenderCommand> useProgramCommand, bindVertexArrayCommand, bindBufferCommand, bindTextureCommand, drawTriangles;
+		useProgramCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::useProgram, material->getShader()->getID()));
+		bindVertexArrayCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bindVertexArray, geometry->getID()));
+		bindBufferCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bindBuffer, geometry->getIndexBuffer().getID()));
+		drawTriangles.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::drawTriangles, geometry->getDrawCount()));
+	
 		// Bind shader
-		glUseProgram(material->getShader()->getID());
+		RendererCommon::actionCommand(useProgramCommand);
 
 		// Apply sceneWideUniforms
 		for (auto& dataPair : s_data->sceneWideUniforms)
@@ -52,21 +59,24 @@ namespace Engine
 				break;
 			}
 		}
+
 		// Apply material uniforms (per draw uniforms)
 		material->getShader()->uploadMat4("u_model", model);
-		if (material->isFlagSet(Material::flag_texture)) glBindTexture(GL_TEXTURE_2D, material->getTexture()->getID());
-		else glBindTexture(GL_TEXTURE_2D, s_data->defaultTexture->getID());
+
+		if (material->isFlagSet(Material::flag_texture)) bindTextureCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bind2DTexture, material->getTexture()->getID()));
+		else  bindTextureCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bind2DTexture, s_data->defaultTexture->getID()));
+		RendererCommon::actionCommand(bindTextureCommand);
+
 		material->getShader()->uploadInt("u_texData", 0);
 
 		if (material->isFlagSet(Material::flag_tint)) material->getShader()->uploadFloat4("u_tint", material->getTint());
 		else  material->getShader()->uploadFloat4("u_tint", s_data->defaultTint);
 
-
 		// Bind geometry (vao and ibo)
-		glBindVertexArray(geometry->getID());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geometry->getIndexBuffer().getID());
+		RendererCommon::actionCommand(bindVertexArrayCommand);
+		RendererCommon::actionCommand(bindBufferCommand);
 		// Submit the draw call
-		glDrawElements(GL_TRIANGLES, geometry->getDrawCount(), GL_UNSIGNED_INT, nullptr);
+		RendererCommon::actionCommand(drawTriangles);
 	}
 
 	void Renderer3D::end()

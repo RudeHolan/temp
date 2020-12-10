@@ -236,12 +236,29 @@ namespace Engine
 		}
 	}
 
-	std::function<void(void)> RenderCommandFactory::drawQuads(uint32_t VAODrawCount)
+	std::function<void(void)> RenderCommandFactory::drawQuads(uint32_t DrawCount)
 	{
 		switch (RenderAPI::getAPI())
 		{
 		case RenderAPI::API::OpenGL:
-			return [VAODrawCount]() {glDrawElements(GL_QUADS, VAODrawCount, GL_UNSIGNED_INT, nullptr); };
+			return [DrawCount]() {glDrawElements(GL_QUADS, DrawCount, GL_UNSIGNED_INT, nullptr); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
+	std::function<void(void)> RenderCommandFactory::drawTriangles(uint32_t DrawCount)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [DrawCount]() {glDrawElements(GL_TRIANGLES, DrawCount, GL_UNSIGNED_INT, nullptr); };
 		case RenderAPI::API::Direct3D:
 			return std::function<void(void)>();
 		case RenderAPI::API::Vulkan:
