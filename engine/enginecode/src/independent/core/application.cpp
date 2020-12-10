@@ -631,6 +631,9 @@ namespace Engine {
 			Quad::createCentreHalfExtents({ 300.f, 50.f }, { 75.f, 15.f })
 		};
 
+		std::shared_ptr<RenderCommand> clearCommand;
+		clearCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearColourAndDepthBuffer));
+
 		float timestep = 0.f;
 
 		//Unit manager stuff
@@ -650,9 +653,11 @@ namespace Engine {
 				m_timer->reset();	
 				
 				//Do frame stuff
+				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				RendererCommon::actionCommand(clearCommand);
+
 				for (auto& model : models) { model = glm::rotate(model, timestep, glm::vec3(0.f, 1.0, 0.f)); }
 
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glEnable(GL_DEPTH_TEST);
 				Renderer3D::begin(swu3D);
