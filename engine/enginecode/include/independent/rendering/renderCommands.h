@@ -24,7 +24,9 @@ namespace Engine
 			disableDepthTest, disableBlend,
 			
 			// commands with args
-			setClearColour, useProgram
+			setClearColour, useProgram, 
+			bindVertexArray, bindBuffer, bind2DTexture,
+			drawQuads, drawTriangles
 		};
 	
 	};
@@ -60,12 +62,12 @@ namespace Engine
 		static std::function<void(void)> disableDepthTestCommand();
 		static std::function<void(void)> disableBlendCommand();
 
-
-
-
 		static std::function<void(void)> getSetClearColourCommand(float r, float g, float b, float a);
 		static std::function<void(void)> useProgramCommand(uint32_t shaderID);
-
+		static std::function<void(void)> bindVertexArray(uint32_t VAOid);
+		static std::function<void(void)> bindBuffer(uint32_t IBOid);
+		static std::function<void(void)> bindTexture(uint32_t textureID);
+		static std::function<void(void)> drawQuads(uint32_t VAODrawCount);
 
 	public:
 		template<typename ...Args> static RenderCommand * createCommand(RenderCommand::Commands command, Args&& ...args)
@@ -142,7 +144,45 @@ namespace Engine
 			}
 				return result;
 
+			case RenderCommand::Commands::bindVertexArray:
+			{
+				uint32_t VAOid;
+				auto argTuple = std::make_tuple(args...);
 
+				getValue<uint32_t, 0>(VAOid, argTuple);
+				result->m_action = bindVertexArray(VAOid);
+			}
+			return result;
+
+			case RenderCommand::Commands::bindBuffer:
+			{
+				uint32_t IBOid;
+				auto argTuple = std::make_tuple(args...);
+
+				getValue<uint32_t, 0> (IBOid, argTuple);
+				result->m_action = bindBuffer(IBOid);
+			}
+			return result;
+
+			case RenderCommand::Commands::bind2DTexture:
+			{
+				uint32_t textureID;
+				auto argTuple = std::make_tuple(args...);
+
+				getValue<uint32_t, 0>(textureID, argTuple);
+				result->m_action = bindTexture(textureID);
+			}
+			return result;
+
+			case RenderCommand::Commands::drawQuads:
+			{
+				uint32_t VAODrawCount;
+				auto argTuple = std::make_tuple(args...);
+
+				getValue<uint32_t, 0>(VAODrawCount, argTuple);
+				result->m_action = drawQuads(VAODrawCount);
+			}
+			return result;
 				
 
 			}

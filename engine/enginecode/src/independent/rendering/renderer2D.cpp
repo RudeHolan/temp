@@ -1,7 +1,6 @@
 /* \file renderer2D.cpp*/
 #include "engine_pch.h"
 #include "systems/log.h"
-#include <glad/glad.h>
 #include "rendering/renderer2D.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -75,15 +74,14 @@ namespace Engine {
 
 	void Renderer2D::begin(const SceneWideUniforms& swu)
 	{
-#pragma region RenderCommands
-		
-			std::shared_ptr<RenderCommand> useProgramCommand;
-			useProgramCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::useProgram, s_data->shader->getID()));
-			
-#pragma endregion
+		////Setting up the render commands 
+		std::shared_ptr<RenderCommand> useProgramCommand, bindVertexArrayCommand, bindBufferCommand;
+		useProgramCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::useProgram, s_data->shader->getID()));
+		bindVertexArrayCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bindVertexArray, s_data->VAO->getID()));
+		bindBufferCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bindBuffer, s_data->VAO->getIndexBuffer().getID()));
+
 		//Bind the shader
 		RendererCommon::actionCommand(useProgramCommand);
-		//glUseProgram(s_data->shader->getID());
 
 		// Apply sceneWideUniforms
 		for (auto& dataPair : swu)
@@ -113,8 +111,8 @@ namespace Engine {
 		}
 
 		//Bind the geometry (vao and ibo)
-		glBindVertexArray(s_data->VAO->getID());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_data->VAO->getIndexBuffer().getID());
+		RendererCommon::actionCommand(bindVertexArrayCommand);
+		RendererCommon::actionCommand(bindBufferCommand);
 	}
 
 	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint)
@@ -128,15 +126,22 @@ namespace Engine {
 	}
 
 	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, const std::shared_ptr<Texture>& texture)
-	{
-		glBindTexture(GL_TEXTURE_2D, texture->getID());
+	{		
+		//Setting up the render commands
+		std::shared_ptr<RenderCommand> bindTextureCommand, drawQuads;
+		bindTextureCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bind2DTexture, texture->getID()));
+		drawQuads.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::drawQuads, s_data->VAO->getDrawCount()));
+
+
+		RendererCommon::actionCommand(bindTextureCommand);
+		
 		s_data->model = glm::scale(glm::translate(glm::mat4(1.f), quad.m_translate), quad.m_scale);
 
 		s_data->shader->uploadInt("u_texData", 0);
 		s_data->shader->uploadFloat4("u_tint", tint);
 		s_data->shader->uploadMat4("u_model", s_data->model);
 
-		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
+		RendererCommon::actionCommand(drawQuads);
 	}
 
 	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, float angle, bool degrees)
@@ -151,16 +156,23 @@ namespace Engine {
 
 	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, const std::shared_ptr<Texture>& texture, float angle, bool degrees)
 	{
+		//Setting up the render commands
+		std::shared_ptr<RenderCommand> drawQuads, bindTextureCommand;
+		drawQuads.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::drawQuads, s_data->VAO->getDrawCount()));
+		bindTextureCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::bind2DTexture, texture->getID()));
+
 		if (degrees) angle - glm::radians(angle);
 
-		glBindTexture(GL_TEXTURE_2D, texture->getID());
+		RendererCommon::actionCommand(bindTextureCommand);
+
 		s_data->model = glm::scale(glm::rotate(glm::translate(glm::mat4(1.f), quad.m_translate), angle, { 0.f, 0.f, 1.f }), quad.m_scale);
 
 		s_data->shader->uploadInt("u_texData", 0);
 		s_data->shader->uploadFloat4("u_tint", tint);
 		s_data->shader->uploadMat4("u_model", s_data->model);
 
-		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
+		RendererCommon::actionCommand(drawQuads);
+
 	}
 
 	void Renderer2D::RtoRGBA(unsigned char* Rbuffer, uint32_t width, uint32_t height)
@@ -210,12 +222,7 @@ namespace Engine {
 
 			// Submit quad
 			submit(quad, tint, s_data->fontTexture);
-
-		
 		}
-
-	
-	
 	}
 
 	void Renderer2D::submit(const char* text, const glm::vec2& position, const glm::vec4& tint)

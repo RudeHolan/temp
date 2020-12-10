@@ -185,6 +185,74 @@ namespace Engine
 		}
 	}
 
+	std::function<void(void)> RenderCommandFactory::bindVertexArray(uint32_t VAOid)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [VAOid]() {glBindVertexArray(VAOid); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
+	std::function<void(void)> RenderCommandFactory::bindBuffer(uint32_t IBOid)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [IBOid]() {glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOid); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
+	std::function<void(void)> RenderCommandFactory::bindTexture(uint32_t textureID)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [textureID]() {glBindTexture(GL_TEXTURE_2D, textureID); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
+	std::function<void(void)> RenderCommandFactory::drawQuads(uint32_t VAODrawCount)
+	{
+		switch (RenderAPI::getAPI())
+		{
+		case RenderAPI::API::OpenGL:
+			return [VAODrawCount]() {glDrawElements(GL_QUADS, VAODrawCount, GL_UNSIGNED_INT, nullptr); };
+		case RenderAPI::API::Direct3D:
+			return std::function<void(void)>();
+		case RenderAPI::API::Vulkan:
+			return std::function<void(void)>();
+		case RenderAPI::API::None:
+			return std::function<void(void)>();
+		default:
+			return std::function<void(void)>();
+		}
+	}
+
 
 
 
