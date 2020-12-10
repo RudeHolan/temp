@@ -642,6 +642,8 @@ namespace Engine {
 		Renderer3D::init();
 		Renderer2D::init();
 
+		float advance;
+
 		while (m_running)
 		{
 				timestep = m_timer->getElapsedTime();
@@ -664,13 +666,26 @@ namespace Engine {
 				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 				Renderer2D::begin(swu2D);
-				//Renderer2D::submit(quads[0], glm::vec4( 0.f, 0.f, 1.f, 1.f ));
-				//Renderer2D::submit(quads[1], letterTexture);
-				//Renderer2D::submit(quads[2], glm::vec4(1.f, 0.f, 1.f, 1.f), numberTexture);
-				Renderer2D::submit(quads[3], glm::vec4(0.f, 0.f, 1.f, 0.5f), letterAndNumbertexture, 45.f, true);
-				Renderer2D::submit(quads[3], glm::vec4(0.75f, 0.5f, 0.5f, 0.5f), letterTexture, glm::radians(-45.f));
-				Renderer2D::submit(quads[4], glm::vec4(1.f, 1.f, 0.f, 1.f), 45.f, true);
+				Renderer2D::submit(quads[0], { 0.f, 0.f, 1.f, 1.f });
+				Renderer2D::submit(quads[1], letterTexture);
+				Renderer2D::submit(quads[2], { 1.f, 0.f, 1.f, 1.f }, numberTexture);
+				Renderer2D::submit(quads[3], {0.f, 0.f, 1.f, 0.5f }, letterAndNumbertexture, 45.f, true);
+				Renderer2D::submit(quads[3], {0.75f, 0.5f, 0.5f, 0.5f }, letterTexture, glm::radians(-45.f));
+				Renderer2D::submit(quads[4], {1.f, 1.f, 0.f, 1.f }, 45.f, true);
 				Renderer2D::submit(quads[5], numberTexture , 30.f, true);
+
+				uint32_t x = 550.f;
+				Renderer2D::submit('g', { x, 550.f }, advance, { 1.f, 1.f, 1.f, 1.f }); x += advance;
+				Renderer2D::submit('o', { x, 550.f }, advance, { 0.f, 1.f, 1.f, 1.f }); x += advance;
+				Renderer2D::submit(' ', { x, 550.f }, advance, { 1.f, 1.f, 0.f, 1.f }); x += advance;
+				Renderer2D::submit('p', { x, 550.f }, advance, { 0.5f, 1.f, 0.2f, 1.f }); x += advance;
+				Renderer2D::submit('j', { x, 550.f }, advance, { 1.f, 0.2f, 0.f, 1.f }); x += advance;
+				Renderer2D::submit('i', { x, 550.f }, advance, { 0.5f, 0.f, 0.2f, 1.f }); x += advance;
+
+				Renderer2D::submit("Hello World!?", { 200.f, 70.f }, { 1.f, 1.f, 0.f, 1.f });
+
+
+		
 				Renderer2D::end();
 
 				glDisable(GL_BLEND);

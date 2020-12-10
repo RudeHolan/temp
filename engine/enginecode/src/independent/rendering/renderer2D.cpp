@@ -1,5 +1,6 @@
 /* \file renderer2D.cpp*/
 #include "engine_pch.h"
+#include "systems/log.h"
 #include <glad/glad.h>
 #include "rendering/renderer2D.h"
 
@@ -8,7 +9,6 @@
 namespace Engine {
 	
 	std::shared_ptr<Renderer2D::InternalData> Renderer2D::s_data = nullptr;
-
 
 
 	void Renderer2D::init()
@@ -41,6 +41,36 @@ namespace Engine {
 		IBO.reset(IndexBuffer::create(indices, 4));
 		s_data->VAO->addVertexBuffer(VBO);
 		s_data->VAO->setIndexBuffer(IBO);
+
+		//File path to a font
+		const char* filePath = "./assets/fonts/arial.ttf";
+
+		//Set the dimensions of the glyph buffer
+		s_data->glyphBufferDimensions = { 256, 256 };
+		s_data->glyphBufferChannels = 4;
+		s_data->glyphBufferSize = s_data->glyphBufferDimensions.x * s_data->glyphBufferDimensions.y * s_data->glyphBufferChannels * sizeof(unsigned char);
+		s_data->glyphBuffer.reset(static_cast<unsigned char *>(malloc(s_data->glyphBufferSize)));
+
+		//Init Freetype lib
+		if (FT_Init_FreeType(&s_data->ft)) Log::error("Error: Freetype could not be initialised");
+
+		// Load the font
+		if (FT_New_Face(s_data->ft, filePath, 0, &s_data->fontFace)) Log::error("Error: Freetype could not load font: {0}", filePath);
+
+		//Set the char size
+		int32_t charSize = 86;
+		if (FT_Set_Pixel_Sizes(s_data->fontFace, 0, charSize)) Log::error("Error: Freetype can't set font size: {0}", charSize);
+	
+		// Init font text
+		s_data->fontTexture.reset(Texture::create(s_data->glyphBufferDimensions.x , s_data->glyphBufferDimensions.y, s_data->glyphBufferChannels, nullptr));
+
+		// Fill the glyph buffer 
+		memset(s_data->glyphBuffer.get(), 60, s_data->glyphBufferSize);
+
+		// Send glyph buffer to the texture on the gpu
+		s_data->fontTexture->edit(0, 0, s_data->glyphBufferDimensions.x, s_data->glyphBufferDimensions.y, s_data->glyphBuffer.get());
+
+
 	}
 
 	void Renderer2D::begin(const SceneWideUniforms& swu)
@@ -80,7 +110,7 @@ namespace Engine {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_data->VAO->getIndexBuffer().getID());
 	}
 
-	void Renderer2D::submit(const Quad& quad, glm::vec4& tint)
+	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint)
 	{
 		Renderer2D::submit(quad, tint, s_data->defaultTexture);
 	}
@@ -90,7 +120,7 @@ namespace Engine {
 		Renderer2D::submit(quad, s_data->defaultTint, texture);
 	}
 
-	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, const std::shared_ptr<Texture>& texture)
+	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, const std::shared_ptr<Texture>& texture)
 	{
 		glBindTexture(GL_TEXTURE_2D, texture->getID());
 		s_data->model = glm::scale(glm::translate(glm::mat4(1.f), quad.m_translate), quad.m_scale);
@@ -102,7 +132,7 @@ namespace Engine {
 		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, float angle, bool degrees)
+	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, float angle, bool degrees)
 	{
 		Renderer2D::submit(quad, tint, s_data->defaultTexture, angle, degrees);
 	}
@@ -112,7 +142,7 @@ namespace Engine {
 		Renderer2D::submit(quad, s_data->defaultTint, texture, angle, degrees);
 	}
 
-	void Renderer2D::submit(const Quad& quad, glm::vec4& tint, const std::shared_ptr<Texture>& texture, float angle, bool degrees)
+	void Renderer2D::submit(const Quad& quad, const glm::vec4& tint, const std::shared_ptr<Texture>& texture, float angle, bool degrees)
 	{
 		if (degrees) angle - glm::radians(angle);
 
@@ -124,6 +154,74 @@ namespace Engine {
 		s_data->shader->uploadMat4("u_model", s_data->model);
 
 		glDrawElements(GL_QUADS, s_data->VAO->getDrawCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Renderer2D::RtoRGBA(unsigned char* Rbuffer, uint32_t width, uint32_t height)
+	{
+
+		memset(s_data->glyphBuffer.get(), 0, s_data->glyphBufferSize);
+
+		unsigned char * pWalker = s_data->glyphBuffer.get();
+		for (int32_t i = 0; i < height; i++)
+		{
+			for (int32_t j = 0; j < width; j++)
+			{
+				*pWalker = 255; pWalker++; // Go to G
+				*pWalker = 255; pWalker++; // Go to B
+				*pWalker = 255; pWalker++; // Go to A
+				*pWalker = *Rbuffer; // Set alpha channel
+				pWalker++; // Go to R of the next pixel
+				Rbuffer++; // Go next monochrome pixel
+			}
+			pWalker += (s_data->glyphBufferDimensions.x - width) * 4;
+		}
+	}
+
+	void Renderer2D::submit(char character, const glm::vec2& position, float& advance, const glm::vec4& tint)
+	{
+		// Get glyph from freetype
+		if (FT_Load_Char(s_data->fontFace, character, FT_LOAD_RENDER)) Log::error("Error: Could no load  glyph or char {0}", character);
+		else
+		{
+			// Get glyph data
+			uint32_t glyphWidth = s_data->fontFace->glyph->bitmap.width;
+			uint32_t glyphHeight = s_data->fontFace->glyph->bitmap.rows;
+			glm::vec2 glyphSize(glyphWidth, glyphHeight);
+			glm::vec2 glyphBearing(s_data->fontFace->glyph->bitmap_left, -s_data->fontFace->glyph->bitmap_top);
+		    
+			// Calculate the advance
+			advance = static_cast<float>(s_data->fontFace->glyph->advance.x >> 6);
+
+			// Calculate the quad for the glyph
+			glm::vec2 glyphHalfExtents = glm::vec2(s_data->fontTexture->getWidthf() * 0.5f, s_data->fontTexture->getHeightf() * 0.5f);
+			glm::vec2 glyphCentre = (position + glyphBearing) + glyphHalfExtents;
+			Quad quad = Quad::createCentreHalfExtents(glyphCentre, glyphHalfExtents);
+
+			//R to RGBA
+			RtoRGBA(s_data->fontFace->glyph->bitmap.buffer, glyphWidth, glyphHeight);
+			s_data->fontTexture->edit(0, 0, s_data->glyphBufferDimensions.x, s_data->glyphBufferDimensions.y, s_data->glyphBuffer.get());
+
+			// Submit quad
+			submit(quad, tint, s_data->fontTexture);
+
+		
+		}
+
+	
+	
+	}
+
+	void Renderer2D::submit(const char* text, const glm::vec2& position, const glm::vec4& tint)
+	{
+		uint32_t lenght = strlen(text);
+		float advance = 0.f, x = position.x;
+
+
+		for (int32_t i = 0; i < lenght; i++)
+		{
+			submit(text[i], { x, position.y }, advance, tint);
+			x += advance;
+		}
 	}
 
 	void Renderer2D::end()

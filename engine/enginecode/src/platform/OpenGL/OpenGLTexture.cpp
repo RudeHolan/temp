@@ -10,6 +10,13 @@
 
 namespace Engine
 {
+	OpenGLTexture::OpenGLTexture(const char* filepath)
+	{
+		int width, height, channels;
+		unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
+		if (data) init(width, height, channels, data);
+		stbi_image_free(data);
+	}
 
 	void OpenGLTexture::init(uint32_t width, uint32_t height, uint32_t channels, unsigned char* data)
 	{
@@ -32,17 +39,9 @@ namespace Engine
 		m_channels = channels;
 	}
 
-	OpenGLTexture::OpenGLTexture(const char* filepath)
-	{
-		int width, height, channels;
-		unsigned char* data = stbi_load(filepath, &width, &height, &channels, 0);
-		if (data) init(width, height, channels, data);
-		stbi_image_free(data);
-	}
-
 	OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, uint32_t channels, unsigned char* data)
 	{
-		if (data) init(width, height, channels, data);
+		init(width, height, channels, data);
 	}
 
 	OpenGLTexture::~OpenGLTexture()
@@ -55,8 +54,8 @@ namespace Engine
 		glBindTexture(GL_TEXTURE_2D, m_OpenGL_ID);
 		if (data)
 		{
-			if (m_channels == 3) glTextureSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-			else if (m_channels == 4) glTextureSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			if (m_channels == 3) glTextureSubImage2D(m_OpenGL_ID, 0, offsetX, offsetY, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+			else if (m_channels == 4) glTextureSubImage2D(m_OpenGL_ID, 0, offsetX, offsetY, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		}
 	}
 
