@@ -281,6 +281,9 @@ namespace Engine {
 	void Application::run()
 	{
 
+	
+
+
 #pragma region TEXTURES
 
 		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture, plainWhiteTexture;
@@ -297,8 +300,6 @@ namespace Engine {
 		
 
 #pragma endregion
-
-
 
 #pragma region RAW_DATA
 
@@ -595,6 +596,41 @@ namespace Engine {
 		
 #pragma endregion
 
+#pragma region RENDER_COMMANDS
+
+		
+		std::shared_ptr<RenderCommand> clearDepthBuffer;
+		clearDepthBuffer.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearDepthBuffer));
+
+		std::shared_ptr<RenderCommand> clearColourBuffer;
+		clearColourBuffer.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearColourBuffer));
+
+		std::shared_ptr<RenderCommand> clearAllCommand;
+		clearAllCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearColourAndDepthBuffer));
+
+		std::shared_ptr<RenderCommand> enableDepthTest;
+		enableDepthTest.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::enableDepthTest));
+
+		std::shared_ptr<RenderCommand> enableBlend;
+		enableBlend.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::enableBlend));
+
+		std::shared_ptr<RenderCommand> setBlendFuncDefault;
+		setBlendFuncDefault.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::setBlendFuncDefault));
+
+		std::shared_ptr<RenderCommand> disableDepthTest;
+		disableDepthTest.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::disableDepthTest));
+
+		std::shared_ptr<RenderCommand> disableBlend;
+		disableBlend.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::disableBlend));
+
+		{
+			std::shared_ptr<RenderCommand> setClearCommand;
+			setClearCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::setClearColour, 1.0f, 0.0f, 0.0f, 1.0f));
+			RendererCommon::actionCommand(setClearCommand);
+		}
+
+#pragma endregion
+
 		//3D stuff
 		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
 		glm::mat4 projection = glm::perspective(glm::radians(45.f), 1080.f / 800.f, 0.1f, 100.f);
@@ -631,16 +667,14 @@ namespace Engine {
 			Quad::createCentreHalfExtents({ 300.f, 50.f }, { 75.f, 15.f })
 		};
 
-		std::shared_ptr<RenderCommand> clearCommand;
-		clearCommand.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearColourAndDepthBuffer));
+		
 
 		float timestep = 0.f;
 
 		//Unit manager stuff
 		//TextureUnitManager unitManager(32);
 		//uint32_t unit;
-
-		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+		//glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 		Renderer3D::init();
 		Renderer2D::init();
@@ -653,22 +687,20 @@ namespace Engine {
 				m_timer->reset();	
 				
 				//Do frame stuff
-				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				RendererCommon::actionCommand(clearCommand);
+				RendererCommon::actionCommand(clearAllCommand);
 
 				for (auto& model : models) { model = glm::rotate(model, timestep, glm::vec3(0.f, 1.0, 0.f)); }
 
-
-				glEnable(GL_DEPTH_TEST);
+				RendererCommon::actionCommand(enableDepthTest);
 				Renderer3D::begin(swu3D);
 				Renderer3D::submit(pyramidVAO, pyramidMat, models[0]);
 				Renderer3D::submit(cubeVAO, letterCubeMat, models[1]);
 				Renderer3D::submit(cubeVAO, numberCubeMat, models[2]);
 				Renderer3D::end();
 
-				glDisable(GL_DEPTH_TEST);
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+				RendererCommon::actionCommand(disableDepthTest);
+				RendererCommon::actionCommand(enableBlend);
+				RendererCommon::actionCommand(setBlendFuncDefault);
 
 				Renderer2D::begin(swu2D);
 				Renderer2D::submit(quads[0], { 0.f, 0.f, 1.f, 1.f });
@@ -689,11 +721,9 @@ namespace Engine {
 
 				Renderer2D::submit("Hello World!?", { 200.f, 70.f }, { 1.f, 1.f, 0.f, 1.f });
 
-
-		
 				Renderer2D::end();
 
-				glDisable(GL_BLEND);
+				RendererCommon::actionCommand(disableBlend);
 				
 				//Update
 				m_window->onUpdate(timestep);
