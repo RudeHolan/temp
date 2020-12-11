@@ -1,7 +1,6 @@
 /**\file renderer3D.cpp */
 
 #include "engine_pch.h"
-#include "glad/glad.h"
 #include "rendering/renderer3D.h"
 
 namespace Engine

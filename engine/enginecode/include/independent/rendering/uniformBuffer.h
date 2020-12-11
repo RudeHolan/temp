@@ -26,7 +26,7 @@ namespace Engine
 
 	public:
 		virtual ~UniformBuffer() = default; //!< Virtual distructor
-		virtual inline uint32_t getRenderID() const = 0; //!< Get the render ID
+		virtual inline uint32_t getID() const = 0; //!< Get the render ID
 		virtual const inline UniformBufferLayout& getLayout() const = 0; //!< Get the layout
 		virtual void attachShaderBlock(const std::shared_ptr<Shader>& shader, const char* blockName) = 0; //!< Attach shader block
 		virtual void uploadData(const char* uniformName, void* data) = 0; //!< Upload data to the shader block
