@@ -76,6 +76,9 @@ namespace Engine {
 		m_timer.reset(new ChronoTimer);
 		m_timer->start();
 
+		// Create the camera
+		m_camController.reset(new CameraController(1024 / 800));
+
 		// Create a window
 		WindowProperties props("My Game Engine", 1024, 800, false);
 		m_window.reset(Window::create(props));
@@ -457,15 +460,8 @@ namespace Engine {
 			22, 23, 20
 		};
 
-		Quad quads[6] =
-		{
-			Quad::createCentreHalfExtents({ 400.f, 200.f }, { 100.f, 50.f }),
-			Quad::createCentreHalfExtents({ 200.f, 200.f }, { 50.f, 100.f }),
-			Quad::createCentreHalfExtents({ 400.f, 500.f }, { 100.f, 75.f }),
-			Quad::createCentreHalfExtents({ 100.f, 200.f }, { 50.f, 50.f }),
-			Quad::createCentreHalfExtents({ 500.f, 100.f }, { 50.f, 25.f }),
-			Quad::createCentreHalfExtents({ 300.f, 50.f }, { 75.f, 15.f })
-		};
+		Quad quad = Quad::createCentreHalfExtents({ 400.f, 750.f }, { 800.f, 100.f });
+
 #pragma endregion 
 
 
@@ -704,10 +700,13 @@ namespace Engine {
 				
 				//Do frame stuff
 				RendererCommon::actionCommand(clearAllCommand);
+				RendererCommon::actionCommand(enableDepthTest);
+
+				m_camController->onUpdate(timestep);
+				swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, glm::value_ptr(m_camController->getCamera().m_view));
 
 				for (auto& model : models) { model = glm::rotate(model, timestep, glm::vec3(0.f, 1.0, 0.f)); }
 
-				RendererCommon::actionCommand(enableDepthTest);
 				Renderer3D::begin(swu3D);
 				Renderer3D::submit(pyramidVAO, pyramidMat, models[0]);
 				Renderer3D::submit(cubeVAO, letterCubeMat, models[1]);
@@ -719,23 +718,8 @@ namespace Engine {
 				RendererCommon::actionCommand(setBlendFuncDefault);
 
 				Renderer2D::begin(swu2D);
-				Renderer2D::submit(quads[0], { 0.f, 0.f, 1.f, 1.f });
-				Renderer2D::submit(quads[1], letterTexture);
-				Renderer2D::submit(quads[2], { 1.f, 0.f, 1.f, 1.f }, numberTexture);
-				Renderer2D::submit(quads[3], {0.f, 0.f, 1.f, 0.5f }, letterAndNumbertexture, 45.f, true);
-				Renderer2D::submit(quads[3], {0.75f, 0.5f, 0.5f, 0.5f }, letterTexture, glm::radians(-45.f));
-				Renderer2D::submit(quads[4], {1.f, 1.f, 0.f, 1.f }, 45.f, true);
-				Renderer2D::submit(quads[5], numberTexture , 30.f, true);
-
-				uint32_t x = 550.f;
-				Renderer2D::submit('g', { x, 550.f }, advance, { 1.f, 1.f, 1.f, 1.f }); x += advance;
-				Renderer2D::submit('o', { x, 550.f }, advance, { 0.f, 1.f, 1.f, 1.f }); x += advance;
-				Renderer2D::submit(' ', { x, 550.f }, advance, { 1.f, 1.f, 0.f, 1.f }); x += advance;
-				Renderer2D::submit('p', { x, 550.f }, advance, { 0.5f, 1.f, 0.2f, 1.f }); x += advance;
-				Renderer2D::submit('j', { x, 550.f }, advance, { 1.f, 0.2f, 0.f, 1.f }); x += advance;
-				Renderer2D::submit('i', { x, 550.f }, advance, { 0.5f, 0.f, 0.2f, 1.f }); x += advance;
-
-				Renderer2D::submit("Hello World!?", { 200.f, 70.f }, { 1.f, 1.f, 0.f, 1.f });
+				Renderer2D::submit(quad, { 0.f, 0.f, 1.f, 1.f });
+				Renderer2D::submit("Simple Camera Controller", { 20.f, 750.f }, { 1.f, 1.f, 0.f, 1.f });
 
 				Renderer2D::end();
 

@@ -8,6 +8,7 @@
 #include "events/eventHandler.h"
 #include "core/window.h"
 #include "core/inputPoller.h"
+#include "cameras/cameraController.h"
 
 
 namespace Engine {
@@ -28,6 +29,7 @@ namespace Engine {
 		Application(); //!< Constructor
 		std::shared_ptr<Log> m_logSystem; //!< Log system
 		std::shared_ptr<System> m_windowsSystem; //!< Window system
+		std::shared_ptr<CameraController> m_camController; //!< Camera controller
 
 		std::shared_ptr<ITimer> m_timer; //!< Timer
 		std::shared_ptr<Window> m_window; //!< Window
