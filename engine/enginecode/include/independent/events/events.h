@@ -1,5 +1,6 @@
- /*\ file events.h*/
-
+/** \file events.h
+* A header file which includes all event header files 
+*/
 #pragma once
 
 #include "codes.h"

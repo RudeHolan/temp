@@ -6,7 +6,7 @@
 namespace Engine {
 	
 	/**\class Shader
-	* API Agnostic shader
+	** \brief API Agnostic shader
 	*/
 	class Shader
 

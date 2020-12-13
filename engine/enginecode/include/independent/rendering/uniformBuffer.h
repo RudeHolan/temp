@@ -14,7 +14,7 @@ namespace Engine
 {	
 	
 	/**\class UniformBuffer
-	* API agnostic uniform buffer
+	** \brief  API agnostic uniform buffer
 	*/
 
 	class UniformBuffer

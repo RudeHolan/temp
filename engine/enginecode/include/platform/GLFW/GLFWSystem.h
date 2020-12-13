@@ -1,4 +1,4 @@
-/**\file GLFWSYSTEM.h */
+/**\file GLFWSystem.h */
 
 #pragma once
 
@@ -11,6 +11,9 @@
 
 namespace Engine
 {
+	/**\class GLFWSystem
+	** \brief Starts the glfw system
+	*/
 	class GLFWSystem : public System 
 	{
 		virtual void start(SystemSignal init = SystemSignal::None, ...) override

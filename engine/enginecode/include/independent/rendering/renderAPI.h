@@ -5,7 +5,8 @@
 namespace Engine
 {
 	/**
-    \class RenderAPI - This class sets up the API 
+    \class RenderAPI 
+	** \brief This class sets up the API 
     */
 	class RenderAPI
 	{

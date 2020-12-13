@@ -9,7 +9,7 @@
 namespace Engine 
 {
 	/**\class GLFWWindowImpl 
-	* Implementation of a window using GLFW
+	** \brief Implementation of a window using GLFW
 	*/
 	class GLFWWindowImpl : public Window
 	{

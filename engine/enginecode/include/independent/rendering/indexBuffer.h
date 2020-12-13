@@ -7,7 +7,7 @@
 namespace Engine {
 
 	/**\class IndexBuffer 
-	* API agnostic index buffer
+	** \brief API agnostic index buffer
 	*/
 	class IndexBuffer {
 	public:

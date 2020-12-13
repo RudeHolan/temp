@@ -8,7 +8,7 @@ namespace Engine
 {
 
 	/**\class OpenGLUniformBuffer
-	* This class creates an OpenGL Uniform Buffer
+	** \brief This class creates an OpenGL Uniform Buffer
 	*/
 
 	class OpenGLUniformBuffer : public UniformBuffer

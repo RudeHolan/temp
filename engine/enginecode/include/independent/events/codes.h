@@ -1,4 +1,6 @@
-/**\file codes.h*/
+/** \file codes.h
+* A header file which includes the relevant keycodes (in this case the GLFWCodes)
+*/
 
 #pragma once
 

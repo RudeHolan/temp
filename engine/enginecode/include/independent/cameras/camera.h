@@ -9,7 +9,8 @@ namespace Engine
 
 
     /**
-    \class OrthographicCamera - This class creates an orthographic camera that can be controlled from the cameraController class
+    \class OrthographicCamera 
+    ** \brief  This class creates an orthographic camera that can be controlled from the cameraController class
     */
     class OrthographicCamera
     {

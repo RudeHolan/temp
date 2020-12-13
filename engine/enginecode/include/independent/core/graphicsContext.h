@@ -4,6 +4,9 @@
 
 namespace Engine
 {
+	/** \class GraphicsContext 
+	** \brief A pure virtual class that inits the graphics context and swaps buffers
+    */
 	class GraphicsContext
 	{
 	public:

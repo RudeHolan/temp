@@ -27,30 +27,8 @@
 
 namespace Engine {
 
-#pragma region TEMP_CLASS
 	
-	class TPVertexNormalised
-	{
-	private:
-		static VertexBufferLayout s_layout;
-	public:
-		glm::vec3 m_pos;
-		std::array<int16_t, 3> m_normal;
-		std::array<int16_t, 2> m_uv;
 
-		TPVertexNormalised() : m_pos(glm::vec3(0.f)), m_normal({ 0,0,0 }), m_uv({ 0, 0 }) {}
-		TPVertexNormalised(const glm::vec3& pos, const std::array<int16_t, 3>& normal, const std::array<int16_t, 2>&uv) :
-			m_pos(pos),
-			m_normal(normal),
-			m_uv(uv) 
-		{}
-		static VertexBufferLayout getLayout() { return s_layout; }
-
-	};
-	
-	VertexBufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
-
-#pragma endregion
 
 	// Set static vars
 	Application* Application::s_instance = nullptr;
@@ -263,6 +241,34 @@ namespace Engine {
 	{
 		return pack({ colour.x, colour.y, colour.z, 1.0 });
 	}
+#pragma endregion
+
+#pragma region NormalisedTPVertices
+
+	/**\class TPVertexNormalised
+    ** \brief A temporary class used for the tp shader vertices
+    */
+	class TPVertexNormalised
+	{
+	private:
+		static VertexBufferLayout s_layout;
+	public:
+		glm::vec3 m_pos;
+		std::array<int16_t, 3> m_normal;
+		std::array<int16_t, 2> m_uv;
+
+		TPVertexNormalised() : m_pos(glm::vec3(0.f)), m_normal({ 0,0,0 }), m_uv({ 0, 0 }) {}
+		TPVertexNormalised(const glm::vec3& pos, const std::array<int16_t, 3>& normal, const std::array<int16_t, 2>& uv) :
+			m_pos(pos),
+			m_normal(normal),
+			m_uv(uv)
+		{}
+		static VertexBufferLayout getLayout() { return s_layout; }
+
+	};
+
+	VertexBufferLayout TPVertexNormalised::s_layout = { {ShaderDataType::Float3, {ShaderDataType::Short3, true}, {ShaderDataType::Short2, true} }, 24 };
+
 #pragma endregion
 
 	Application::~Application()

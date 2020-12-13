@@ -15,8 +15,7 @@ namespace Engine {
 
 	/**
 	\class Application
-	Fundemental class of the engine. A singleton which runs the game loop infinitely.
-	Provides ...
+	** \brief Fundemental class of the engine. A singleton which runs the game loop infinitely.
 	*/
 
 	class Application
@@ -38,8 +37,8 @@ namespace Engine {
 		bool onClose(WindowCloseEvent& e); //!< Run when the window closes
 		bool onResize(WindowResizeEvent& e); //!< Run when the window is resized
 		bool onWindowMove(WindowMoveEvent& e); //!< Run when the window is moved
-		bool onFocus(WindowFocusEvent& e);
-		bool onLostFocus(WindowLostFocusEvent& e);
+		bool onFocus(WindowFocusEvent& e); //!< Run when the window is focused
+		bool onLostFocus(WindowLostFocusEvent& e); //!< Run the window isn't focused
 
 		bool onKeyPress(KeyPressEvent& e); //!< Run when a key is pressed
 		bool onKeyRelease(KeyReleaseEvent& e); //!< Run when a key is released

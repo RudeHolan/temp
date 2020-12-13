@@ -9,7 +9,8 @@
 namespace Engine
 {	
 	/**
-	\class WindowEvent - The base windows event class
+	\class WindowEvent
+	** \brief The base windows event class
 	*/
 	class WindowEvent : public Event 
 	{
@@ -19,7 +20,8 @@ namespace Engine
 
 
 	/**
-    \class WindowCloseEvent - The window close event class
+    \class WindowCloseEvent 
+	** \brief The window close event class
     */
 	class WindowCloseEvent : public WindowEvent
 	{
@@ -31,7 +33,8 @@ namespace Engine
 
 
 	/**
-    \class WindowResizeEvent - The window resize event class
+    \class WindowResizeEvent 
+	** \brief The window resize event class
     */
 	class WindowResizeEvent : public WindowEvent
 	{
@@ -55,7 +58,8 @@ namespace Engine
 
 
 	/**
-	\class WindowFocusEvent - The window focus event class
+	\class WindowFocusEvent 
+	** \brief The window focus event class
 	*/
 	class WindowFocusEvent : public WindowEvent
 	{
@@ -71,7 +75,8 @@ namespace Engine
 
 
 	/**
-	\class WindowLostFocusEvent - The windows lost focus event class
+	\class WindowLostFocusEvent 
+	** \brief The windows lost focus event class
 	*/
 	class WindowLostFocusEvent : public WindowEvent
 	{
@@ -87,7 +92,8 @@ namespace Engine
 
 
 	/**
-	\class WindowMoveEvent - The windows move event class
+	\class WindowMoveEvent 
+	** \brief The windows move event class
 	*/
 	class WindowMoveEvent : public WindowEvent
 	{

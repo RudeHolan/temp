@@ -7,8 +7,8 @@
 
 namespace Engine
 {
-	/* \class GLFWInputPoller
-	*   Input poller for getting the current keyboard/mouse state specific to the GLFW system
+	/** \class GLFWInputPoller
+	** \brief Input poller for getting the current keyboard/mouse state specific to the GLFW system
 	*/
 	class GLFWInputPoller
 	{

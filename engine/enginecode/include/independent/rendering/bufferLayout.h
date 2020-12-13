@@ -10,7 +10,7 @@ namespace Engine
 
 	/**
 	\class VertexBufferElement
-	A class which holds data about a single element in a vertex buffer layout
+	** \brief A class which holds data about a single element in a vertex buffer layout
 	*/
 
 	class VertexBufferElement
@@ -33,7 +33,7 @@ namespace Engine
 
 	/**
     \class UniformBufferElement
-    A class which holds data about a single element in a uniform buffer layout
+   ** \brief  A class which holds data about a single element in a uniform buffer layout
     */
 	class UniformBufferElement
 	{
@@ -56,7 +56,7 @@ namespace Engine
 
 	/**
     \class BufferLayout
-	Abstraction of the notion of a buffer layout
+	** \brief  Abstraction of the notion of a buffer layout
     */
 	template <class G>
 	class BufferLayout

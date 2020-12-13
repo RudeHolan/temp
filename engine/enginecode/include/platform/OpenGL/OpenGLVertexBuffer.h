@@ -7,7 +7,7 @@ namespace Engine
 {
 
 	/**\class OpenGLVertexBuffer
-	* This class creates an OpenGL Vertex Buffer
+	** \brief This class creates an OpenGL Vertex Buffer
 	*/
 
 	class OpenGLVertexBuffer : public VertexBuffer

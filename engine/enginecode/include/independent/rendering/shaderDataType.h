@@ -5,6 +5,10 @@
 
 namespace Engine 
 {
+	/**
+    \enum  ShaderDataType
+    ** \brief A struct that holds all of the available shader data types
+    */
 	enum class ShaderDataType
 	{
 		None = 0,
@@ -24,7 +28,7 @@ namespace Engine
 
 	namespace SDT
 	{
-		static uint32_t size(ShaderDataType type)
+		static uint32_t size(ShaderDataType type) //!< The sizes of the different shader data types
 		{
 			switch (type)
 			{
@@ -49,7 +53,7 @@ namespace Engine
 			}
 		}
 
-		static uint32_t componentCount(ShaderDataType type)
+		static uint32_t componentCount(ShaderDataType type) //!< The component count of the different shader data types
 		{
 			switch (type)
 			{
@@ -74,7 +78,7 @@ namespace Engine
 			}
 		}
 
-		static uint32_t std140alignment(ShaderDataType type)
+		static uint32_t std140alignment(ShaderDataType type) //!< The std140 allignment of the different shader data types
 		{
 			switch (type)
 			{

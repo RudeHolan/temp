@@ -8,7 +8,7 @@
 namespace Engine
 
 {    /**\class OpenGLVertexArray
-	 * This class creates an OpenGL Vertex Array
+	 ** \brief This class creates an OpenGL Vertex Array
 	 */
 
 	class OpenGLVertexArray : public VertexArray

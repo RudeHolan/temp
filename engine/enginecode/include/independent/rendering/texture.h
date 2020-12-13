@@ -6,7 +6,7 @@
 namespace Engine
 {
 	/**\class Texture
-	* API agnostic texture
+	** \brief API agnostic texture
 	*/
 	class Texture
 	{

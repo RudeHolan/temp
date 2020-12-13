@@ -6,8 +6,8 @@
 
 namespace Engine
 {
-	/* \class InputPoller
-	*   API agnostic input poller for getting the current keyboard/mouse state
+	/** \class InputPoller
+	** \brief API agnostic input poller for getting the current keyboard/mouse state
 	*/
 	class InputPoller
 	{

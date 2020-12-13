@@ -6,7 +6,7 @@
 namespace Engine
 {	
 	/**\class OpenGLTexture
-	* This class creates an OpenGL texture
+	** \brief This class creates an OpenGL texture
 	*/
 	class OpenGLTexture : public Texture
 	{

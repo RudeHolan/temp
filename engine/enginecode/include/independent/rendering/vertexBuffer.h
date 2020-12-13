@@ -8,7 +8,7 @@
 namespace Engine
 {
 	/**\class VertexBuffer
-	* API agnostic vertex buffer
+	** \brief  API agnostic vertex buffer
 	*/
 
 	class VertexBuffer

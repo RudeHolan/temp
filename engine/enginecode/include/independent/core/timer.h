@@ -7,7 +7,8 @@ namespace Engine
 {	
 	
 	/**
-	\class ITimer - interface class for timers
+	\class ITimer 
+	** \brief An interface class for timers
 	*/
 	class ITimer
 	{
@@ -22,7 +23,8 @@ namespace Engine
 
 
 	/**
-	\class ChronoTimer - chrono timer class
+	\class ChronoTimer 
+	** \brief Chrono timer class
 	*/
 	class ChronoTimer : public ITimer
 	{

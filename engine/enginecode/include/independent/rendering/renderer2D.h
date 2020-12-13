@@ -8,6 +8,10 @@
 
 namespace Engine
 {
+	/**
+	\class Quad
+	** \brief this class holds the information for a render command
+	*/
 	class Quad
 	{
 	private:
@@ -16,13 +20,18 @@ namespace Engine
 		friend class Renderer2D; 
 
 	public:
-		Quad() = default;
-		static Quad createCentreHalfExtents(const glm::vec2& centre, const glm::vec2& halfExtents);
+		Quad() = default; //!< default constructor
+		static Quad createCentreHalfExtents(const glm::vec2& centre, const glm::vec2& halfExtents); //!< creates a single quad
 	};
 
+	/**
+    \class Renderer2D
+	** \brief This is the 2D renderer 
+    */
 	class Renderer2D
 	{
 	private:
+
 		struct InternalData
 		{
 			std::shared_ptr<Texture> defaultTexture;
@@ -37,11 +46,11 @@ namespace Engine
 			uint32_t glyphBufferSize;
 			uint32_t glyphBufferChannels;
 			std::shared_ptr<unsigned char> glyphBuffer;
-		};
+		}; //!< A struct that holds all of the information a 2d object can have 
 
-		static std::shared_ptr<InternalData> s_data;
+		static std::shared_ptr<InternalData> s_data; //!< the data that a 2D object holds
 
-		static void RtoRGBA(unsigned char* Rbuffer, uint32_t width, uint32_t height);
+		static void RtoRGBA(unsigned char* Rbuffer, uint32_t width, uint32_t height); //!< Convert a single R channel to an RGBA
 
 	public:
 		static void init(); //!< Init the internal data of the renderer
@@ -57,7 +66,7 @@ namespace Engine
 		static void submit(char character, const glm::vec2& position, float& advance, const glm::vec4& tint); //!< Render a single character with a tint
 		static void submit(const char* text, const glm::vec2& position, const glm::vec4& tint); //!< Render a single character with a tint
 
-		static void end();
+		static void end(); //!< End a 2D scene
 
 	};
 }

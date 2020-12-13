@@ -62,12 +62,13 @@ namespace Engine {
 	class Renderer3D
 	{
 	private:
+
 		struct InternalData
 		{
 			SceneWideUniforms sceneWideUniforms; //!< Replace with UBO
 			std::shared_ptr<Texture> defaultTexture; //!< Empty white texture
 			glm::vec4 defaultTint; //!< Default white tint
-		};
+		}; //!<  A struct that holds all of the characteristics a 3d object can have 
 	
 		static std::shared_ptr<InternalData> s_data; //!< Data internal to the renderer
 	

@@ -8,7 +8,8 @@ namespace Engine
 {
 
 	/** 
-	\enum EventType - An enum for event types
+	\enum class EventType
+	** \brief An enum for event types
 	*/
 	enum class EventType
 	{
@@ -20,7 +21,8 @@ namespace Engine
 
 
 	/**
-	\enum EventCategory - An enum for event categories
+	\enum EventCategory 
+	** \brief An enum for event categories
 	*/
 	enum EventCategory
 	{
@@ -34,7 +36,8 @@ namespace Engine
 
 
 	/**
-	\class Event - Event base class
+	\class Event 
+	** \brief Event base class
 	*/
 	class Event
 	{

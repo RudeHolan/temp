@@ -6,7 +6,7 @@
 namespace Engine
 {
 	/**\class OpenGLIndexBuffer
-    * This class creates an OpenGL Index Buffer
+    ** \brief This class creates an OpenGL Index Buffer
     */
 
 	class OpenGLIndexBuffer : public IndexBuffer

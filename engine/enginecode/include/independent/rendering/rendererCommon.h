@@ -1,4 +1,6 @@
-/**\file rendererCommon.h*/
+/** \file rendererCommon.h
+* A header file which includes all of the common headers which the 2D and 3D renderers share 
+*/
 
 #pragma once
 
@@ -14,7 +16,10 @@
 namespace Engine {
 
 	using SceneWideUniforms = std::unordered_map<const char*, std::pair<ShaderDataType, void*>>;
-
+	
+	/**\class RendererCommon
+	** \brief A class which allows the renderers to use commmands
+	*/
 	class RendererCommon
 	{
 	public:

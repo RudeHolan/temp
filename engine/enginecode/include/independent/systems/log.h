@@ -8,7 +8,8 @@
 namespace Engine
 
 {	/**
-	\class Log - A class for the logging system
+	\class Log ]
+	** \brief A class for the logging system
 	*/
 	class Log : public System
 	{

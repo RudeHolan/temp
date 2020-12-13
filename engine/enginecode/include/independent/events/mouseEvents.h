@@ -9,21 +9,23 @@ namespace Engine
 {
 
 	/**
-    \class MouseEvent - The base mouse event class
+    \class MouseEvent 
+	** \brief The base mouse event class
     */
 	class MouseEvent : public Event
 	{
-		inline virtual int32_t getCategoryFlags() const override { return EventCategoryMouse | EventCategoryInput; }
+		inline virtual int32_t getCategoryFlags() const override { return EventCategoryMouse | EventCategoryInput; } //!< Gets the category flags 
 	};
 
 
 	/**
-	\class MouseButtonPressEvent - The mouse button press event class
+	\class MouseButtonPressEvent 
+	** \brief The mouse button press event class
 	*/
 	class MouseButtonPressEvent : public MouseEvent
 	{
 	private:
-		int32_t m_button;
+		int32_t m_button; //!< The keycode of a mouse button
 
 	public:
 		MouseButtonPressEvent(int32_t button) :
@@ -38,12 +40,13 @@ namespace Engine
 
 
 	/**
-    \class MouseButtonReleaseEvent - The mouse button release event class
+    \class MouseButtonReleaseEvent
+	** \brief The mouse button release event class
     */
 	class MouseButtonReleaseEvent : public MouseEvent
 	{
 	private:
-		int32_t m_button;
+		int32_t m_button; //!< The keycode of a mouse button
 
 	public:
 		MouseButtonReleaseEvent(int32_t button) :
@@ -57,14 +60,15 @@ namespace Engine
 
 
 	/**
-    \class MouseMoveEvent - The mouse move event class
+    \class MouseMoveEvent
+	** \brief The mouse move event class
     */
 	class MouseMoveEvent : public MouseEvent
 	{
 		
 	private:
-		float m_mouseX;
-		float m_mouseY;
+		float m_mouseX; //!< mouse X position
+		float m_mouseY; //!< mouse Y position
 
 	public:
 		MouseMoveEvent(float x, float y) :
@@ -74,22 +78,23 @@ namespace Engine
 
 		static EventType getStaticType() { return EventType::MouseMoved; } //!< Return static type
 		inline virtual EventType getEventType() const override { return getStaticType(); } //!< Get the event type
-		inline float getX() const { return m_mouseX; }
-		inline float getY() const { return m_mouseY; }
-		glm::vec2 getPos() const { return glm::vec2(m_mouseX, m_mouseY); }
+		inline float getX() const { return m_mouseX; } //!< Get the mouse X position
+		inline float getY() const { return m_mouseY; } //!< Get the mouse Y position
+		glm::vec2 getPos() const { return glm::vec2(m_mouseX, m_mouseY); } //!< Get the mouse position in vec2 format
 
 	};
 
 
 	/**
-    \class MouseScrollEvent - The mouse scroll event class
+    \class MouseScrollEvent
+	** \brief The mouse scroll event class
     */
 	class MouseScrollEvent : public MouseEvent
 	{
 
 	private:
-		float m_offsetX;
-		float m_offsetY;
+		float m_offsetX;  //!<The X offset of the mouse scroll wheel 
+		float m_offsetY;  //!<The Y offset of the mouse scroll wheel 
 
 	public:
 		MouseScrollEvent(float xOffset, float yOffset) :

@@ -8,7 +8,8 @@
 
 namespace Engine
 {	/**
-	\class SubTexture - This class creates subtextures out of a single texture (think sprite sheets)
+	\class SubTexture 
+    ** \brief This class creates subtextures out of a single texture (think sprite sheets)
 	*/
 	class SubTexture
 	{

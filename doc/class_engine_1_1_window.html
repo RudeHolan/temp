@@ -53,6 +53,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract windows base class. All implemented windows should code to this interface.  
+ <a href="class_engine_1_1_window.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="window_8h_source.html">window.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Engine::Window:</div>
@@ -60,7 +63,7 @@ Inheritance diagram for Engine::Window:</div>
  <div class="center">
   <img src="class_engine_1_1_window.png" usemap="#Engine::Window_map" alt=""/>
   <map id="Engine::Window_map" name="Engine::Window_map">
-<area href="class_engine_1_1_g_l_f_w_window_impl.html" alt="Engine::GLFWWindowImpl" shape="rect" coords="0,56,158,80"/>
+<area href="class_engine_1_1_g_l_f_w_window_impl.html" title="Implementation of a window using GLFW." alt="Engine::GLFWWindowImpl" shape="rect" coords="0,56,158,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -108,7 +111,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a88314fb96332a38a4014ec8f0cb1cc9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_engine_1_1_event_handler.html">EventHandler</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_window.html#a88314fb96332a38a4014ec8f0cb1cc9d">m_handler</a></td></tr>
-<tr class="memdesc:a88314fb96332a38a4014ec8f0cb1cc9d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_engine_1_1_event.html">Event</a> handler.  <a href="class_engine_1_1_window.html#a88314fb96332a38a4014ec8f0cb1cc9d">More...</a><br /></td></tr>
+<tr class="memdesc:a88314fb96332a38a4014ec8f0cb1cc9d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_engine_1_1_event.html" title="Event base class.">Event</a> handler.  <a href="class_engine_1_1_window.html#a88314fb96332a38a4014ec8f0cb1cc9d">More...</a><br /></td></tr>
 <tr class="separator:a88314fb96332a38a4014ec8f0cb1cc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafd9592f61d6f32f0629aa4d0bbf0957"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="class_engine_1_1_graphics_context.html">GraphicsContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_window.html#aafd9592f61d6f32f0629aa4d0bbf0957">m_graphicsContext</a></td></tr>
 <tr class="separator:aafd9592f61d6f32f0629aa4d0bbf0957"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,7 +119,7 @@ Protected Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract windows base class. All implemented windows should code to this interface. </p>
 
-<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00033">33</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00036">36</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab3723c9b47bc710f190d4cf022ce0c12"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab3723c9b47bc710f190d4cf022ce0c12">&#9670;&nbsp;</a></span>~Window()</h2>
@@ -141,7 +144,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00042">42</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00045">45</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
 
 </div>
 </div>
@@ -228,7 +231,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Get the event handler. </p>
 
-<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00051">51</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00054">54</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
 
 </div>
 </div>
@@ -489,7 +492,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00037">37</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00040">40</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
 
 </div>
 </div>
@@ -513,9 +516,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_engine_1_1_event.html">Event</a> handler. </p>
+<p><a class="el" href="class_engine_1_1_event.html" title="Event base class.">Event</a> handler. </p>
 
-<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00036">36</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="window_8h_source.html#l00039">39</a> of file <a class="el" href="window_8h_source.html">window.h</a>.</p>
 
 </div>
 </div>

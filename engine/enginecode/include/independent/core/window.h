@@ -9,6 +9,9 @@
 namespace Engine
 {
 
+	/**\struct WindowProperties
+    ** \brief Holds the window properties (title, width, height, others)
+    */
 	struct WindowProperties
 	{
 		char* m_title;
@@ -23,12 +26,12 @@ namespace Engine
 			m_width(width),
 			m_height(height),
 			m_isFullscreen(isFullscreen)
-		{};
+		{}; //!< constructor
 	};
 
 
 	/**\class Window
-    *Abstract windows base class. All implemented windows should code to this interface.
+    ** \brief Abstract windows base class. All implemented windows should code to this interface.
     */
 	class Window
 	{ 

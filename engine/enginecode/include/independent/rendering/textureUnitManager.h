@@ -6,6 +6,9 @@
 
 namespace Engine
 {
+	/**\class TextureUnitManager
+    ** \brief This class manages textures in an optiman way
+    */
 	class TextureUnitManager
 	{
 	private:

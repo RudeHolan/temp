@@ -7,7 +7,7 @@
 namespace Engine{
 
 	/**\class OpenGLShader
-	* This class creates an OpenGL shader
+	** \brief This class creates an OpenGL shader
 	*/
 	class OpenGLShader : public Shader
 	{

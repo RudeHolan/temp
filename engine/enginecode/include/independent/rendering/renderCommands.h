@@ -1,4 +1,4 @@
-/** \file renderCommands*/
+/** \file renderCommands.h*/
 
 #pragma once
 
@@ -9,6 +9,11 @@ namespace Engine
 {
 
 	class RendererCommon;
+
+	/**
+	\class RenderCommand 
+	** \brief this class holds the information for a render command
+	*/
 	class RenderCommand
 	{
 	private:
@@ -17,6 +22,10 @@ namespace Engine
 		friend class RendererCommon;
 
 	public:
+		/**
+        \enum  Commands
+		** \brief An enum for the different type of render commands
+        */
 		enum class Commands{
 			//commands with no args
 			clearDepthBuffer, clearColourBuffer, clearColourAndDepthBuffer, 
@@ -30,6 +39,11 @@ namespace Engine
 	};
 
 
+
+		/**
+	    \class RenderCommandFactory 
+		** \brief this class allows the creation of events
+	    */
 	class RenderCommandFactory
 	{
 
@@ -49,22 +63,19 @@ namespace Engine
 			result = std::get<I>(tup);
 		}
 
-		static std::function<void(void)> getClearDepthBufferCommand();
-		static std::function<void(void)> getClearColourBufferCommand();
-		static std::function<void(void)> getClearColourAndDepthBufferCommand();
+		static std::function<void(void)> getClearDepthBufferCommand();				//!< Get the "ClearDepthBuffer" openGL command
+		static std::function<void(void)> getClearColourBufferCommand();				//!< Get the "ClearColourBuffer" openGL command
+		static std::function<void(void)> getClearColourAndDepthBufferCommand();		//!< Get the "ClearColourAndDepthBuffer " openGL command
 
-		static std::function<void(void)> getEnableDepthTestCommand();
-		static std::function<void(void)> getEnableBlendCommand();
-		static std::function<void(void)> getSetBlendFuncDefault();
+		static std::function<void(void)> getEnableDepthTestCommand();	//!< Get the "EnableDepthTest" openGL command
+		static std::function<void(void)> getEnableBlendCommand();		//!< Get the "EnableBlend" openGL command
+		static std::function<void(void)> getSetBlendFuncDefault();		//!< Get the "SetBlendFuncDefault" openGL command
 
-		static std::function<void(void)> disableDepthTestCommand();
-		static std::function<void(void)> disableBlendCommand();
+		static std::function<void(void)> disableDepthTestCommand();    //!< Get the "disableDepthTest" openGL command
+		static std::function<void(void)> disableBlendCommand();		   //!< Get the "disableBlend" openGL command
 
-
-
-
-		static std::function<void(void)> getSetClearColourCommand(float r, float g, float b, float a);
-		static std::function<void(void)> useProgramCommand(uint32_t shaderID);
+		static std::function<void(void)> getSetClearColourCommand(float r, float g, float b, float a); //!< Get the "SetClearColour" openGL command
+		static std::function<void(void)> useProgramCommand(uint32_t shaderID);						   //!< Get the "useProgram" openGL command
 
 
 	public:

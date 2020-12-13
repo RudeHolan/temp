@@ -53,6 +53,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>This class creates an OpenGL Uniform Buffer.  
+ <a href="class_engine_1_1_open_g_l_uniform_buffer.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_open_g_l_uniform_buffer_8h_source.html">OpenGLUniformBuffer.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Engine::OpenGLUniformBuffer:</div>
@@ -60,7 +63,7 @@ Inheritance diagram for Engine::OpenGLUniformBuffer:</div>
  <div class="center">
   <img src="class_engine_1_1_open_g_l_uniform_buffer.png" usemap="#Engine::OpenGLUniformBuffer_map" alt=""/>
   <map id="Engine::OpenGLUniformBuffer_map" name="Engine::OpenGLUniformBuffer_map">
-<area href="class_engine_1_1_uniform_buffer.html" alt="Engine::UniformBuffer" shape="rect" coords="0,0,182,24"/>
+<area href="class_engine_1_1_uniform_buffer.html" title="API agnostic uniform buffer." alt="Engine::UniformBuffer" shape="rect" coords="0,0,182,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -78,9 +81,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac31e81f388f15ab3dd35108a4b26db3b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespace_engine.html#a3f17b8af97679f789eabe46299a03aba">UniformBufferLayout</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_open_g_l_uniform_buffer.html#ac31e81f388f15ab3dd35108a4b26db3b">getLayout</a> () const override</td></tr>
 <tr class="memdesc:ac31e81f388f15ab3dd35108a4b26db3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the layout.  <a href="class_engine_1_1_open_g_l_uniform_buffer.html#ac31e81f388f15ab3dd35108a4b26db3b">More...</a><br /></td></tr>
 <tr class="separator:ac31e81f388f15ab3dd35108a4b26db3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73d78d14d73a0f39302bbf9c4717d80a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_open_g_l_uniform_buffer.html#a73d78d14d73a0f39302bbf9c4717d80a">attackShaderBlock</a> (const std::shared_ptr&lt; <a class="el" href="class_engine_1_1_shader.html">Shader</a> &gt; &amp;shader, const char *blockName) override</td></tr>
-<tr class="memdesc:a73d78d14d73a0f39302bbf9c4717d80a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attach shader block.  <a href="class_engine_1_1_open_g_l_uniform_buffer.html#a73d78d14d73a0f39302bbf9c4717d80a">More...</a><br /></td></tr>
-<tr class="separator:a73d78d14d73a0f39302bbf9c4717d80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7612793c01a6137b53e2663a9e278f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_open_g_l_uniform_buffer.html#ad7612793c01a6137b53e2663a9e278f0">attachShaderBlock</a> (const std::shared_ptr&lt; <a class="el" href="class_engine_1_1_shader.html">Shader</a> &gt; &amp;shader, const char *blockName) override</td></tr>
+<tr class="memdesc:ad7612793c01a6137b53e2663a9e278f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attach shader block.  <a href="class_engine_1_1_open_g_l_uniform_buffer.html#ad7612793c01a6137b53e2663a9e278f0">More...</a><br /></td></tr>
+<tr class="separator:ad7612793c01a6137b53e2663a9e278f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58d9339cc62e918453c0a21e964b730f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_engine_1_1_open_g_l_uniform_buffer.html#a58d9339cc62e918453c0a21e964b730f">uploadData</a> (const char *uniformName, void *data) override</td></tr>
 <tr class="memdesc:a58d9339cc62e918453c0a21e964b730f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upload data to the shader block.  <a href="class_engine_1_1_open_g_l_uniform_buffer.html#a58d9339cc62e918453c0a21e964b730f">More...</a><br /></td></tr>
 <tr class="separator:a58d9339cc62e918453c0a21e964b730f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,7 +122,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a25c1a73a08628cb27200d7a486bc8fb8 inherit pro_attribs_class_engine_1_1_uniform_buffer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class creates an OpenGL Uniform Buffer </p>
+<div class="textblock"><p>This class creates an OpenGL Uniform Buffer. </p>
 
 <p class="definition">Definition at line <a class="el" href="_open_g_l_uniform_buffer_8h_source.html#l00014">14</a> of file <a class="el" href="_open_g_l_uniform_buffer_8h_source.html">OpenGLUniformBuffer.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -167,8 +170,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a73d78d14d73a0f39302bbf9c4717d80a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73d78d14d73a0f39302bbf9c4717d80a">&#9670;&nbsp;</a></span>attackShaderBlock()</h2>
+<a id="ad7612793c01a6137b53e2663a9e278f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7612793c01a6137b53e2663a9e278f0">&#9670;&nbsp;</a></span>attachShaderBlock()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -177,7 +180,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Engine::OpenGLUniformBuffer::attackShaderBlock </td>
+          <td class="memname">void Engine::OpenGLUniformBuffer::attachShaderBlock </td>
           <td>(</td>
           <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="class_engine_1_1_shader.html">Shader</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>shader</em>, </td>
@@ -203,7 +206,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Attach shader block. </p>
 
-<p>Implements <a class="el" href="class_engine_1_1_uniform_buffer.html#a217edb4d7b8e617682c3cb2bee2861b3">Engine::UniformBuffer</a>.</p>
+<p>Implements <a class="el" href="class_engine_1_1_uniform_buffer.html#a9a53d1ab6f4ea6e5faffe5b2c2f00aba">Engine::UniformBuffer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_open_g_l_uniform_buffer_8cpp_source.html#l00035">35</a> of file <a class="el" href="_open_g_l_uniform_buffer_8cpp_source.html">OpenGLUniformBuffer.cpp</a>.</p>
 
