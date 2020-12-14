@@ -10,7 +10,7 @@
 namespace Engine {
 	
     /**\class VertexArray
-    ** \brief API agnostic vertex buffer
+    ** \brief API agnostic vertex array
     */
 
     class VertexArray
