@@ -1,4 +1,4 @@
-#include "..\include\UILayer.h"
+#include "UILayer.h"
 
 using namespace Engine;
 
@@ -6,7 +6,7 @@ UILayer::UILayer(const char* name) : Layer(name)
 {
 	auto& window = Application::getInstance().getWindow();
 
-	window.reset(new CameraController(1024 / 800));
+	m_cam.reset(new CameraController(window->getWidth()/window->getHeight()));
 
 	enableBlend.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::enableBlend));
 	disableDepthTest.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::disableDepthTest));
