@@ -109,6 +109,8 @@ project "Sandbox"
 		"vendor/glm/",
 		"vendor/spdlog/include",
 		"vendor/json/single_include/nlohmann",
+		"vendor/freetype2/include",
+
 		"vendor/IMGui",
 		"vendor/enTT/single_include",
 		"vendor/luaBridge/Source",
@@ -119,7 +121,8 @@ project "Sandbox"
 
 	links
 	{
-		"Engine"
+		"Engine",
+		"Freetype"
 	}
 
 	filter "system:windows"

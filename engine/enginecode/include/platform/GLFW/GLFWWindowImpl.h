@@ -18,7 +18,6 @@ namespace Engine
 		GLFWwindow* m_native; //!< Native GLFW window
 		float m_aspectRatio; //!< Aspect ratio
 
-
 	public:
 		GLFWWindowImpl(const WindowProperties& properties); //!< Constructor
 		virtual void init(const WindowProperties& properties) override; //!< Initialise the window

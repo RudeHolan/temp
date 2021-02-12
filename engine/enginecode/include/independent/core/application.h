@@ -9,6 +9,9 @@
 #include "core/window.h"
 #include "core/inputPoller.h"
 #include "cameras/cameraController.h"
+#include "core/layer.h"
+#include "core/layerStack.h"
+#include "rendering/rendererCommon.h"
 
 
 namespace Engine {

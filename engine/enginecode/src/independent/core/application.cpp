@@ -724,6 +724,7 @@ namespace Engine {
 				RendererCommon::actionCommand(setBlendFuncDefault);
 
 				Renderer2D::begin(swu2D);
+
 				Renderer2D::submit(quad, { 0.f, 0.f, 1.f, 1.f });
 				Renderer2D::submit("Simple Camera Controller", { 20.f, 750.f }, { 1.f, 1.f, 0.f, 1.f });
 
