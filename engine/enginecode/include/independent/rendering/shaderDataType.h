@@ -23,7 +23,9 @@ namespace Engine
 		Float4,
 		Int,
 		Mat3,
-		Mat4
+		Mat4,
+		FlatInt,
+		FlatByte
 	};
 
 	namespace SDT
@@ -32,6 +34,7 @@ namespace Engine
 		{
 			switch (type)
 			{
+			case ShaderDataType::FlatByte: return 1;
 			case ShaderDataType::Byte4:  return 1 * 4;     
 
 			case ShaderDataType::Short:  return 2;     //size of the float is 2 bytes
@@ -44,6 +47,7 @@ namespace Engine
 			case ShaderDataType::Float3: return 4 * 3;
 			case ShaderDataType::Float4: return 4 * 4; 
 
+			case ShaderDataType::FlatInt: return 4;
 			case ShaderDataType::Int: return 4;
 
 			case ShaderDataType::Mat3: return 4 * 3 * 3;
@@ -57,6 +61,7 @@ namespace Engine
 		{
 			switch (type)
 			{
+			case ShaderDataType::FlatByte: return 1;
 			case ShaderDataType::Byte4:  return 4;
 
 			case ShaderDataType::Short: return 1;  //it has 1 short
@@ -69,6 +74,7 @@ namespace Engine
 			case ShaderDataType::Float3: return 3;
 			case ShaderDataType::Float4: return 4;
 
+			case ShaderDataType::FlatInt: return 1;
 			case ShaderDataType::Int: return 1;  
 
 			case ShaderDataType::Mat3: return 3 * 3;
@@ -82,6 +88,8 @@ namespace Engine
 		{
 			switch (type)
 			{
+			case ShaderDataType::FlatByte: return 1 * 4;
+
 			case ShaderDataType::Byte4:  return 1 * 4;
 
 			case ShaderDataType::Short:  return 2;     
@@ -93,6 +101,9 @@ namespace Engine
 			case ShaderDataType::Float2: return 4 * 2; 
 			case ShaderDataType::Float3: return 4 * 4;
 			case ShaderDataType::Float4: return 4 * 4;
+
+			case ShaderDataType::FlatInt: return 4 * 1;
+
 
 			case ShaderDataType::Mat3: return 4 * 3 * 3;
 			case ShaderDataType::Mat4: return 4 * 4 * 4;

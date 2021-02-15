@@ -20,7 +20,7 @@ namespace Engine
 	public:
 		OpenGLUniformBuffer(const UniformBufferLayout& layout); //!< Constructor
 		~OpenGLUniformBuffer(); //!< Virtual distructor
-		inline uint32_t getRenderID() const override { return m_OpenGL_ID; } //!< Get the render ID
+		inline uint32_t getID() const override { return m_OpenGL_ID; } //!< Get the render ID
 		const inline UniformBufferLayout& getLayout() const override { return m_layout; } //!< Get the layout
 		void attachShaderBlock(const std::shared_ptr<Shader>& shader, const char* blockName) override; //!< Attach shader block
 		void uploadData(const char* uniformName, void* data) override; //!< Upload data to the shader block

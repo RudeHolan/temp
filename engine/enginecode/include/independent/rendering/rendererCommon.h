@@ -11,7 +11,9 @@
 #include "rendering/shaderDataType.h"
 #include "rendering/shader.h"
 #include "rendering/texture.h"
+#include "rendering/subTexture.h"
 #include "rendering/renderCommands.h"
+#include "rendering/uniformBuffer.h"
 
 
 namespace Engine {

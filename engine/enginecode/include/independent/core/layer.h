@@ -28,5 +28,12 @@ namespace Engine
 		inline const bool isDisplayed() const { return m_isDisplayed; }
 		inline const bool isActive() const { return m_isActive; }
 		inline const bool isFocused() const { return m_isFocused; }
+
+		virtual void onKeyPressed(KeyPressEvent& e) { e.handle(false); }
+		virtual void onKeyReleased(KeyReleaseEvent& e) { e.handle(false); }
+		virtual void onMousePressed(MouseButtonPressEvent& e) { e.handle(false); }
+		virtual void onMouseReleased(MouseButtonReleaseEvent& e) { e.handle(false); }
+		virtual void onMouseMoved(MouseMoveEvent& e) { e.handle(false); }
+		virtual void onMouseScrolled(MouseScrollEvent& e) { e.handle(false); }
 	};
 }

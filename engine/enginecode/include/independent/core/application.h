@@ -21,6 +21,16 @@ namespace Engine {
 	** \brief Fundemental class of the engine. A singleton which runs the game loop infinitely.
 	*/
 
+	struct ApplicationProps
+	{
+		WindowProperties winProps;
+		uint32_t batchsize2D = 8192;
+		const char* fontFilePath = "./assets/fonts/arial.ttf";
+		uint32_t charSize = 86;
+		uint32_t shadersCapacity = 40;
+		uint32_t texturesCapacity = 30;
+	};
+
 	class Application
 	{
 	private:
@@ -35,6 +45,8 @@ namespace Engine {
 
 		std::shared_ptr<ITimer> m_timer; //!< Timer
 		std::shared_ptr<Window> m_window; //!< Window
+
+		LayerStack m_layerStack;
 
 
 		bool onClose(WindowCloseEvent& e); //!< Run when the window closes

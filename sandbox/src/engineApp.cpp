@@ -4,6 +4,7 @@
 
 engineApp::engineApp()
 {
+	m_layerStack.push(new UILayer("UI Layer"));
 }
 
 engineApp::~engineApp()
@@ -12,6 +13,6 @@ engineApp::~engineApp()
 }
 
 Engine::Application* Engine::startApplication()
-{
+{	
 	return new engineApp();
 }

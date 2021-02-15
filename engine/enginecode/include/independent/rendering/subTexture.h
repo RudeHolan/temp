@@ -22,8 +22,8 @@ namespace Engine
 	public:
 		SubTexture() {};   //!< default constructor
 		SubTexture(const std::shared_ptr<Texture>& texture, const glm::vec2& UVStart, const glm::vec2& UVEnd); //!< Constructor
-		inline glm::vec2 getUVStart() { return m_UVStart; } //!< Get the UV start
-		inline glm::vec2 getUVEnd() { return m_UVEnd; } //!< Get the UV End
+		inline  glm::vec2 getUVStart() const { return m_UVStart; } //!< Get the UV start
+		inline  glm::vec2 getUVEnd() const { return m_UVEnd; } //!< Get the UV End
 		glm::ivec2 getSize() { return m_size; } //!< get the size
 		glm::vec2 getSizef() { return { static_cast<float>(m_size.x), static_cast<float>(m_size.y) }; } //!< Get the size(in vec2)
 		inline uint32_t getWidth() { return m_size.x; } //!< Get the width
@@ -33,7 +33,8 @@ namespace Engine
 		float transformU(float U); //!< Transform original to atlased co-ords (U)
 		float transformV(float V);//!< Transform original to atlased co-ords (V)
 		glm::vec2 transformUV(glm::vec2 UV); //!< Transform original to atlased co-ords (UV)
-	
+		inline const std::shared_ptr<Texture>& getBaseTexture() const { return m_texture; }
+
 	
 	};
 }

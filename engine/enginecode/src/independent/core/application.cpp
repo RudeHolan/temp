@@ -80,6 +80,8 @@ namespace Engine {
 		InputPoller::setNativeWindow(m_window->getNativeWindow());
 
 		m_timer->reset();
+
+		Renderer2D::init();
 	}
 
 
@@ -284,8 +286,9 @@ namespace Engine {
 	void Application::run()
 	{
 
-	
-/////Textures for the cubes and the pyramid
+
+
+		/////Textures for the cubes and the pyramid
 #pragma region TEXTURES
 
 		std::shared_ptr<Texture> letterTexture, numberTexture, letterAndNumbertexture, plainWhiteTexture;
@@ -296,68 +299,72 @@ namespace Engine {
 		unsigned char whitepixel[4] = { 255 ,255, 255, 255 };
 		plainWhiteTexture.reset(Texture::create(1, 1, 4, whitepixel));
 
-		
+
 		SubTexture letterCube(letterAndNumbertexture, { 0.f,0.f }, { 1.0f,0.5f });
 		SubTexture numberCube(letterAndNumbertexture, { 0.f,0.5f }, { 1.0f,1.0f });
-		
+
+		SubTexture eSubTexture(letterTexture, glm::vec2(0.f), glm::vec2(1.f));
+
+
 
 #pragma endregion
 
 
-/////3D verts and 2D quads
+		/////3D verts and 2D quads
+		
 #pragma region RAW_DATA
-
-		std::vector<TPVertexNormalised> cubeVertices(24);
-		cubeVertices.at(0) =  TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.00f,    0.f}));
-		cubeVertices.at(1) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.00f,   0.5f}));
-		cubeVertices.at(2) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.33f, 0.5f}));
-		cubeVertices.at(3) =  TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  0.f, -1.f,}),  normalise({0.33f,  0.f}));
-		cubeVertices.at(4) =  TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.33f, 0.5f}));
-		cubeVertices.at(5) =  TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.66f, 0.5f}));
-		cubeVertices.at(6) =  TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.66f,  0.f}));
-		cubeVertices.at(7) =  TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  0.f,  1.f,}),  normalise({0.33f,   0.f}));
-		cubeVertices.at(8) =  TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({1.00f,    0.f}));
-		cubeVertices.at(9) =  TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({0.66f,  0.f}));
-		cubeVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({0.66f, 0.5f}));
-		cubeVertices.at(11) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f,  0.f,}),  normalise({1.00f,  0.5f}));
-		cubeVertices.at(12) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.00f,   0.5f}));
-		cubeVertices.at(13) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.00f,   1.0f}));
-		cubeVertices.at(14) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.33f, 1.0f}));
-		cubeVertices.at(15) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({0.f,  1.f,  0.f,}),  normalise({0.30f,  0.5f}));
-		cubeVertices.at(16) = TPVertexNormalised({-0.5f,  0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.66f, 0.5f}));
-		cubeVertices.at(17) = TPVertexNormalised({-0.5f,  0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.33f, 0.5f}));
-		cubeVertices.at(18) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.33f, 1.0f}));
-		cubeVertices.at(19) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-1.f,  0.f,  0.f,}), normalise({0.66f, 1.0f}));
-		cubeVertices.at(20) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({1.00f,  1.0f}));
-		cubeVertices.at(21) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({1.00f,  0.5f}));
-		cubeVertices.at(22) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({0.66f, 0.5f}));
-		cubeVertices.at(23) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({1.f,  0.f,  0.f,}),  normalise({0.66f, 1.0f}));
-
-
-	
-		std::vector<TPVertexNormalised> pyramidVertices(16);
-		pyramidVertices.at(0) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.f, 0.0f}));
-		pyramidVertices.at(1) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.f, 0.5f}));
-		pyramidVertices.at(2) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.33f, 0.5f}));
-		pyramidVertices.at(3) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, -1.f, 0.f}) ,normalise({0.33f, 0.0f}));
-
-		pyramidVertices.at(4) = TPVertexNormalised({-0.5f, -0.5f, -0.5f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({0.33f, 1.0f}));
-		pyramidVertices.at(5) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({0.66f, 1.0f}));
-		pyramidVertices.at(6) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f}, normalise({-0.8944f, 0.4472f, 0.f}) ,normalise({(0.33f + 0.66f) *0.5f, 0.5f}));
-
-		pyramidVertices.at(7) = TPVertexNormalised({-0.5f, -0.5f,  0.5f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
-		pyramidVertices.at(8) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
-		pyramidVertices.at(9) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f}, normalise({0.f, 0.4472f, 0.8944f }) ,normalise({0.f, 0.f}));
-
-		pyramidVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f, 0.5f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));
-		pyramidVertices.at(11) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));										 
-		pyramidVertices.at(12) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f}, normalise({0.8944f, 0.4472f, 0.f}) ,normalise({0.f, 0.f}));
-
-		pyramidVertices.at(13) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
-		pyramidVertices.at(14) = TPVertexNormalised({-0.5f, -0.5f,-0.5f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
-		pyramidVertices.at(15) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f}, normalise({ 0.f, 0.4472f, -0.8944f}) ,normalise({0.8f, 0.2f}));
-
 		/*
+		std::vector<TPVertexNormalised> cubeVertices(24);
+		cubeVertices.at(0) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f }, normalise({ 0.f,  0.f, -1.f, }), normalise({ 0.00f,    0.f }));
+		cubeVertices.at(1) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f }, normalise({ 0.f,  0.f, -1.f, }), normalise({ 0.00f,   0.5f }));
+		cubeVertices.at(2) = TPVertexNormalised({ -0.5f, -0.5f, -0.5f }, normalise({ 0.f,  0.f, -1.f, }), normalise({ 0.33f, 0.5f }));
+		cubeVertices.at(3) = TPVertexNormalised({ -0.5f,  0.5f, -0.5f }, normalise({ 0.f,  0.f, -1.f, }), normalise({ 0.33f,  0.f }));
+		cubeVertices.at(4) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ 0.f,  0.f,  1.f, }), normalise({ 0.33f, 0.5f }));
+		cubeVertices.at(5) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f }, normalise({ 0.f,  0.f,  1.f, }), normalise({ 0.66f, 0.5f }));
+		cubeVertices.at(6) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f }, normalise({ 0.f,  0.f,  1.f, }), normalise({ 0.66f,  0.f }));
+		cubeVertices.at(7) = TPVertexNormalised({ -0.5f,  0.5f,  0.5f }, normalise({ 0.f,  0.f,  1.f, }), normalise({ 0.33f,   0.f }));
+		cubeVertices.at(8) = TPVertexNormalised({ -0.5f, -0.5f, -0.5f }, normalise({ 0.f, -1.f,  0.f, }), normalise({ 1.00f,    0.f }));
+		cubeVertices.at(9) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f }, normalise({ 0.f, -1.f,  0.f, }), normalise({ 0.66f,  0.f }));
+		cubeVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f }, normalise({ 0.f, -1.f,  0.f, }), normalise({ 0.66f, 0.5f }));
+		cubeVertices.at(11) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ 0.f, -1.f,  0.f, }), normalise({ 1.00f,  0.5f }));
+		cubeVertices.at(12) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f }, normalise({ 0.f,  1.f,  0.f, }), normalise({ 0.00f,   0.5f }));
+		cubeVertices.at(13) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f }, normalise({ 0.f,  1.f,  0.f, }), normalise({ 0.00f,   1.0f }));
+		cubeVertices.at(14) = TPVertexNormalised({ -0.5f,  0.5f, -0.5f }, normalise({ 0.f,  1.f,  0.f, }), normalise({ 0.33f, 1.0f }));
+		cubeVertices.at(15) = TPVertexNormalised({ -0.5f,  0.5f,  0.5f }, normalise({ 0.f,  1.f,  0.f, }), normalise({ 0.30f,  0.5f }));
+		cubeVertices.at(16) = TPVertexNormalised({ -0.5f,  0.5f,  0.5f }, normalise({ -1.f,  0.f,  0.f, }), normalise({ 0.66f, 0.5f }));
+		cubeVertices.at(17) = TPVertexNormalised({ -0.5f,  0.5f, -0.5f }, normalise({ -1.f,  0.f,  0.f, }), normalise({ 0.33f, 0.5f }));
+		cubeVertices.at(18) = TPVertexNormalised({ -0.5f, -0.5f, -0.5f }, normalise({ -1.f,  0.f,  0.f, }), normalise({ 0.33f, 1.0f }));
+		cubeVertices.at(19) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ -1.f,  0.f,  0.f, }), normalise({ 0.66f, 1.0f }));
+		cubeVertices.at(20) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f }, normalise({ 1.f,  0.f,  0.f, }), normalise({ 1.00f,  1.0f }));
+		cubeVertices.at(21) = TPVertexNormalised({ 0.5f,  0.5f, -0.5f }, normalise({ 1.f,  0.f,  0.f, }), normalise({ 1.00f,  0.5f }));
+		cubeVertices.at(22) = TPVertexNormalised({ 0.5f,  0.5f,  0.5f }, normalise({ 1.f,  0.f,  0.f, }), normalise({ 0.66f, 0.5f }));
+		cubeVertices.at(23) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f }, normalise({ 1.f,  0.f,  0.f, }), normalise({ 0.66f, 1.0f }));
+
+
+
+		std::vector<TPVertexNormalised> pyramidVertices(16);
+		pyramidVertices.at(0) = TPVertexNormalised({ -0.5f, -0.5f, -0.5f }, normalise({ 0.f, -1.f, 0.f }), normalise({ 0.f, 0.0f }));
+		pyramidVertices.at(1) = TPVertexNormalised({ 0.5f, -0.5f, -0.5f }, normalise({ 0.f, -1.f, 0.f }), normalise({ 0.f, 0.5f }));
+		pyramidVertices.at(2) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f }, normalise({ 0.f, -1.f, 0.f }), normalise({ 0.33f, 0.5f }));
+		pyramidVertices.at(3) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ 0.f, -1.f, 0.f }), normalise({ 0.33f, 0.0f }));
+
+		pyramidVertices.at(4) = TPVertexNormalised({ -0.5f, -0.5f, -0.5f }, normalise({ -0.8944f, 0.4472f, 0.f }), normalise({ 0.33f, 1.0f }));
+		pyramidVertices.at(5) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ -0.8944f, 0.4472f, 0.f }), normalise({ 0.66f, 1.0f }));
+		pyramidVertices.at(6) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f }, normalise({ -0.8944f, 0.4472f, 0.f }), normalise({ (0.33f + 0.66f) * 0.5f, 0.5f }));
+
+		pyramidVertices.at(7) = TPVertexNormalised({ -0.5f, -0.5f,  0.5f }, normalise({ 0.f, 0.4472f, 0.8944f }), normalise({ 0.f, 0.f }));
+		pyramidVertices.at(8) = TPVertexNormalised({ 0.5f, -0.5f,  0.5f }, normalise({ 0.f, 0.4472f, 0.8944f }), normalise({ 0.f, 0.f }));
+		pyramidVertices.at(9) = TPVertexNormalised({ 0.0f,  0.5f,  0.0f }, normalise({ 0.f, 0.4472f, 0.8944f }), normalise({ 0.f, 0.f }));
+
+		pyramidVertices.at(10) = TPVertexNormalised({ 0.5f, -0.5f, 0.5f }, normalise({ 0.8944f, 0.4472f, 0.f }), normalise({ 0.f, 0.f }));
+		pyramidVertices.at(11) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f }, normalise({ 0.8944f, 0.4472f, 0.f }), normalise({ 0.f, 0.f }));
+		pyramidVertices.at(12) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f }, normalise({ 0.8944f, 0.4472f, 0.f }), normalise({ 0.f, 0.f }));
+
+		pyramidVertices.at(13) = TPVertexNormalised({ 0.5f, -0.5f,-0.5f }, normalise({ 0.f, 0.4472f, -0.8944f }), normalise({ 0.8f, 0.2f }));
+		pyramidVertices.at(14) = TPVertexNormalised({ -0.5f, -0.5f,-0.5f }, normalise({ 0.f, 0.4472f, -0.8944f }), normalise({ 0.8f, 0.2f }));
+		pyramidVertices.at(15) = TPVertexNormalised({ 0.0f,  0.5f, 0.0f }, normalise({ 0.f, 0.4472f, -0.8944f }), normalise({ 0.8f, 0.2f }));
+
+
 		//float pyramidVertices[6 * 16] =  {					  
 		//	//	 <------ Pos ------>  <--- colour ---> 
 		//		-0.5f, -0.5f, -0.5f,  0.8f, 0.2f, 0.8f, //  square Magneta
@@ -383,32 +390,32 @@ namespace Engine {
 		//};
 
 
-			     float cubeVertices[8 * 24] = {
-				 //	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
-				 0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
-				-0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
-				-0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33),  letterCube.transformV(0.f),
-				-0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(1.f),   letterCube.transformV(0.f),
-				 0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
-				 0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				-0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
-				 0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(1.0f),
-				-0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
-				-0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.3f),  letterCube.transformV(0.5f),
-				-0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				-0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
-				-0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
-				-0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f),
-				 0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(1.0f),
-				 0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
-				 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
-				 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
+		float cubeVertices[8 * 24] = {
+			//	 <------ Pos ------>  <--- normal --->  <---------------------- UV -------------------------->
+			0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.f),
+			0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+		   -0.5f, -0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+		   -0.5f,  0.5f, -0.5f,  0.f,  0.f, -1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.f),
+		   -0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+			0.5f, -0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+			0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+		   -0.5f,  0.5f, 0.5f,   0.f,  0.f,  1.f,  letterCube.transformU(0.33),  letterCube.transformV(0.f),
+		   -0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(1.f),   letterCube.transformV(0.f),
+			0.5f, -0.5f, -0.5f,  0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.f),
+			0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+		   -0.5f, -0.5f, 0.5f,   0.f, -1.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+			0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(0.5f),
+			0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.f),   letterCube.transformV(1.0f),
+		   -0.5f,  0.5f, -0.5f,  0.f,  1.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+		   -0.5f,  0.5f, 0.5f,   0.f,  1.f,  0.f,  letterCube.transformU(0.3f),  letterCube.transformV(0.5f),
+		   -0.5f,  0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+		   -0.5f,  0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(0.5f),
+		   -0.5f, -0.5f, -0.5f, -1.f,  0.f,  0.f,  letterCube.transformU(0.33f), letterCube.transformV(1.0f),
+		   -0.5f, -0.5f, 0.5f,  -1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f),
+			0.5f, -0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(1.0f),
+			0.5f,  0.5f, -0.5f,  1.f,  0.f,  0.f,  letterCube.transformU(1.0f),  letterCube.transformV(0.5f),
+			0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(0.5f),
+			0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  letterCube.transformU(0.66f), letterCube.transformV(1.0f)
 		};
 
 
@@ -439,7 +446,7 @@ namespace Engine {
 		//		 0.5f,  0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 0.5f,
 		//		 0.5f, -0.5f, 0.5f,   1.f,  0.f,  0.f,  0.66f, 1.0f
 		//};
-		*/
+
 
 		uint32_t pyramidIndices[3 * 6] =
 		{
@@ -465,45 +472,46 @@ namespace Engine {
 			20, 21, 22,
 			22, 23, 20
 		};
-
+*/
 		Quad quad = Quad::createCentreHalfExtents({ 400.f, 750.f }, { 800.f, 100.f });
 
 #pragma endregion 
 
 
-/////VAO, VBO, IBO
-#pragma region GL_BUFFERS	
+		/////VAO, VBO, IBO
+		/*
+		#pragma region GL_BUFFERS
 
-		std::shared_ptr<VertexArray> cubeVAO;
-		std::shared_ptr<VertexBuffer> cubeVBO;
-		std::shared_ptr<IndexBuffer> cubeIBO;
+				std::shared_ptr<VertexArray> cubeVAO;
+				std::shared_ptr<VertexBuffer> cubeVBO;
+				std::shared_ptr<IndexBuffer> cubeIBO;
 
-		cubeVAO.reset(VertexArray::create());
+				cubeVAO.reset(VertexArray::create());
 
-		cubeVBO.reset(VertexBuffer::create(cubeVertices.data(), sizeof(TPVertexNormalised) * cubeVertices.size(), TPVertexNormalised::getLayout()));
+				cubeVBO.reset(VertexBuffer::create(cubeVertices.data(), sizeof(TPVertexNormalised) * cubeVertices.size(), TPVertexNormalised::getLayout()));
 
-		cubeIBO.reset(IndexBuffer::create(cubeIndices, 36));
-		
-		cubeVAO->addVertexBuffer(cubeVBO);
-		cubeVAO->setIndexBuffer(cubeIBO);
+				cubeIBO.reset(IndexBuffer::create(cubeIndices, 36));
 
-		std::shared_ptr<VertexArray> pyramidVAO;
-		std::shared_ptr<VertexBuffer>pyramidVBO;
-		std::shared_ptr<IndexBuffer> pyramidIBO;
+				cubeVAO->addVertexBuffer(cubeVBO);
+				cubeVAO->setIndexBuffer(cubeIBO);
 
-		pyramidVAO.reset(VertexArray::create());
+				std::shared_ptr<VertexArray> pyramidVAO;
+				std::shared_ptr<VertexBuffer>pyramidVBO;
+				std::shared_ptr<IndexBuffer> pyramidIBO;
 
-		pyramidVBO.reset(VertexBuffer::create(pyramidVertices.data(), sizeof(TPVertexNormalised) * pyramidVertices.size(), TPVertexNormalised::getLayout()));
+				pyramidVAO.reset(VertexArray::create());
 
-		pyramidIBO.reset(IndexBuffer::create(pyramidIndices, 18));
+				pyramidVBO.reset(VertexBuffer::create(pyramidVertices.data(), sizeof(TPVertexNormalised) * pyramidVertices.size(), TPVertexNormalised::getLayout()));
 
-		pyramidVAO->addVertexBuffer(pyramidVBO);
-		pyramidVAO->setIndexBuffer(pyramidIBO);
-		
-#pragma endregion
+				pyramidIBO.reset(IndexBuffer::create(pyramidIndices, 18));
 
+				pyramidVAO->addVertexBuffer(pyramidVBO);
+				pyramidVAO->setIndexBuffer(pyramidIBO);
 
-////Flat Colour and Phong
+		#pragma endregion
+		*/
+
+		////Flat Colour and Phong
 #pragma region SHADERS
 
 		std::shared_ptr<Shader> FCShader;
@@ -514,10 +522,11 @@ namespace Engine {
 
 #pragma endregion 
 
-
-////This is currently not used
+         ////Not functional
 #pragma region UBOs
 		/*
+
+
 		//old camera ubo
 		uint32_t cameraUBO;
 
@@ -560,9 +569,9 @@ namespace Engine {
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(lightColour));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(lightPosition));
 		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(viewPosition));
-		*/
-		
-		/*
+
+
+
 		uint32_t blockNumber = 0;
 
 		//Camera UBO
@@ -596,11 +605,12 @@ namespace Engine {
 
 
 		blockNumber++;
-		*/
-#pragma endregion 
 
 
-////Materials for the cubes and the pyramid
+*/
+#pragma endregion
+
+         ////Materials for the cubes and the pyramid
 #pragma region MATERIALS
 		std::shared_ptr<Material> pyramidMat, letterCubeMat, numberCubeMat;
 		glm::vec4 tint(0.f, 1.f, 1.f, 1.f);
@@ -608,14 +618,14 @@ namespace Engine {
 		pyramidMat.reset(new Material(TPShader, { 0.4f, 0.7f, 0.3f, 0.5f }));
 		letterCubeMat.reset(new Material(TPShader, letterTexture));
 		numberCubeMat.reset(new Material(TPShader, numberTexture, tint));
-		
+
 #pragma endregion
 
 
-////This is the reason why there is no OpenGL code in this file
+		////This is the reason why there is no OpenGL code in this file
 #pragma region RENDER_COMMANDS
 
-		
+
 		std::shared_ptr<RenderCommand> clearDepthBuffer;
 		clearDepthBuffer.reset(RenderCommandFactory::createCommand(RenderCommand::Commands::clearDepthBuffer));
 
@@ -649,7 +659,7 @@ namespace Engine {
 #pragma endregion
 
 
-////The Scene Wide Uniforms
+		////The Scene Wide Uniforms
 #pragma region 3D&2D_Stuff
 		//3D stuff
 		glm::mat4 view = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0., 0.f, -1), glm::vec3(0., 1.f, 0.f));
@@ -680,64 +690,39 @@ namespace Engine {
 #pragma endregion
 
 		float timestep = 0.f;
-
-		//Currently not in use
-		//
-		//
-		//
-		//Unit manager stuff
-		//TextureUnitManager unitManager(32);
-		//uint32_t unit;
-		//glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-		//
-		//
-		//
-		//Currently not in use
-
-		Renderer3D::init();
-		Renderer2D::init();
-
-		float advance;
-
 		while (m_running)
 		{
-				timestep = m_timer->getElapsedTime();
-				m_timer->reset();	
-				
-				//Do frame stuff
-				RendererCommon::actionCommand(clearAllCommand);
-				RendererCommon::actionCommand(enableDepthTest);
-
-				m_camController->onUpdate(timestep);
-				swu3D["u_view"] = std::pair<ShaderDataType, void*>(ShaderDataType::Mat4, glm::value_ptr(m_camController->getCamera().m_view));
-
-				for (auto& model : models) { model = glm::rotate(model, timestep, glm::vec3(0.f, 1.0, 0.f)); }
-
-				Renderer3D::begin(swu3D);
-				Renderer3D::submit(pyramidVAO, pyramidMat, models[0]);
-				Renderer3D::submit(cubeVAO, letterCubeMat, models[1]);
-				Renderer3D::submit(cubeVAO, numberCubeMat, models[2]);
-				Renderer3D::end();
-
-				RendererCommon::actionCommand(disableDepthTest);
-				RendererCommon::actionCommand(enableBlend);
-				RendererCommon::actionCommand(setBlendFuncDefault);
-
-				Renderer2D::begin(swu2D);
-
-				Renderer2D::submit(quad, { 0.f, 0.f, 1.f, 1.f });
-				Renderer2D::submit("Simple Camera Controller", { 20.f, 750.f }, { 1.f, 1.f, 0.f, 1.f });
-
-				Renderer2D::end();
-
-				RendererCommon::actionCommand(disableBlend);
-				
-				//Update
-				m_window->onUpdate(timestep);
-				
-		};
+			timestep = m_timer->getElapsedTime();
+			m_timer->reset();
 
 
+
+
+			m_camController->onUpdate(timestep);
+
+			RendererCommon::actionCommand(clearAllCommand);
+			RendererCommon::actionCommand(disableDepthTest);
+			RendererCommon::actionCommand(enableBlend);
+			RendererCommon::actionCommand(setBlendFuncDefault);
+
+			Renderer2D::begin(swu2D);
+
+			//Renderer2D::submit(quad, letterCube );
+			Renderer2D::submit(quad, eSubTexture);
+//			Renderer2D::submit("Simple Camera Controller", { 20.f, 750.f }, { 1.f, 1.f, 0.f, 1.f });
+
+			Renderer2D::end();
+
+			RendererCommon::actionCommand(disableBlend);
+
+			//Update
+			m_window->onUpdate(timestep);
+
+
+
+
+
+		}
 	}
 		
 }

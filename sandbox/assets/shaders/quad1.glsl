@@ -2,20 +2,26 @@
 
 #version 440 core
 
-layout(location = 0) in vec2 a_vertexPosition;
+layout(location = 0) in vec4 a_vertexPosition;
 layout(location = 1) in vec2 a_texCoord;
+layout(location = 2) in int a_texUnit;
+layout(location = 3) in vec4 a_tint;
 
 out vec2 texCoords;
+out flat int texUnit;
+out vec4 tint;
 
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
+layout (std140) uniform b_camera
+{
+  mat4 u_projection;
+  mat4 u_view;
+};
 
 void main()
 {
 
 texCoords = vec2(a_texCoord);
-gl_Position = u_projection * u_view * u_model * vec4(a_vertexPosition, 1.0, 1.0);
+gl_Position = u_projection * u_view * a_vertexPosition;
 
 }
 
@@ -26,13 +32,13 @@ gl_Position = u_projection * u_view * u_model * vec4(a_vertexPosition, 1.0, 1.0)
 layout(location = 0) out vec4 colour;
 
 in vec2 texCoords;
+in flat int texUnit;
+in vec4 tint;
 
-uniform vec4 u_tint;
-
-uniform sampler2D u_texData;
+uniform sampler2D[32] u_texData;
 
 void main()
 {
-colour = texture(u_texData, texCoords) * u_tint;
+colour = texture(u_texData[texUnit], texCoords) * tint;
 }
 

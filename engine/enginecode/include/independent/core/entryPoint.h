@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 {
 	auto application = Engine::startApplication();
 	application->run();
-	delete application;
+	delete application; 
 
 	return 0;
 }
